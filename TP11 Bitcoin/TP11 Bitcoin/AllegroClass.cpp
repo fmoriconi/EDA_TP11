@@ -1,5 +1,4 @@
 #include "AllegroClass.h"
-
 #include <iostream>
 using namespace std;
 allegroClass::allegroClass(unsigned quantity_) : quantity(quantity_)

@@ -84,6 +84,7 @@
       <Optimization>Disabled</Optimization>
       <SDLCheck>true</SDLCheck>
       <ConformanceMode>true</ConformanceMode>
+      <DisableSpecificWarnings>4996</DisableSpecificWarnings>
     </ClCompile>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
@@ -127,12 +128,17 @@
     <ClCompile Include="Grafo.cpp" />
     <ClCompile Include="main.cpp" />
     <ClCompile Include="Nodo.cpp" />
+    <ClCompile Include="parseCmdLine.cpp" />
+    <ClCompile Include="parser.cpp" />
     <ClCompile Include="UTXO.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="AllegroClass.h" />
     <ClInclude Include="Grafo.h" />
     <ClInclude Include="Nodo.h" />
+    <ClInclude Include="parameters.h" />
+    <ClInclude Include="parseCmdLine.h" />
+    <ClInclude Include="parser.h" />
     <ClInclude Include="UTXO.h" />
   </ItemGroup>
   <ItemGroup>

@@ -4,39 +4,51 @@
 /////////////////////////////////////////////////////////////////
 
 #include <iostream>
+#include "parseCmdLine.h"
+#include "parameters.h"
+
 //#include "cryptopp"
+
 int main(int argc, char * argv[]) {
 
+	parameters_t params;
 
-	createNodes();
+	if (parseCmdLine(argc, argv, &parseCallback, &params) > 0) {
 
-	while (checkConnectivity()) //BFS o DFS...
-		makeConnections();
+		//createNodes();
 
-	for (Node N in Graph) {
+		//while (checkConnectivity()) //BFS o DFS...
+		//	makeConnections();
 
-		if (N.hasTX2Send())
-			N.sendTX();
+		//for (Node N in Graph) {
 
-	} //Primero se envian todas las transacciones, apilandose en una cola como en networking, y luego se procesan.
+		//	if (N.hasTX2Send())
+		//		N.sendTX();
 
-	for (Node N in Graph) {
-		if (N.TXArrived)
-			N.VerifyTxQueue();
+		//} //Primero se envian todas las transacciones, apilandose en una cola como en networking, y luego se procesan.
+
+		//for (Node N in Graph) {
+		//	if (N.TXArrived)
+		//		N.VerifyTxQueue();
+		//}
+
+		//for (N in graph) {
+		//	if (N.isMiner())
+		//		N.OneMine(); //ONE MIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIINE
+		//}
+
+
+		//createTX(N1, N2, 7); //Mando 7 EDACoins del nodo 1 al nodo 2
+
+		////----------------------------//
+		//// ALLEGRO	- Input y eventos //
+		////----------------------------//
+
+		getchar();
+
 	}
 
-	for (N in graph) {
-		if (N.isMiner())
-			N.OneMine(); //ONE MIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIINE
-	}
-
-
-	createTX(N1, N2, 7); //Mando 7 EDACoins del nodo 1 al nodo 2
-
-	//----------------------------//
-	// ALLEGRO	- Input y eventos //
-	//----------------------------//
-
+	return 0;
 }
 
 //Si nos da una embolia, revisar bitcoinbook en gitHub. Sirve para entender los conceptos.

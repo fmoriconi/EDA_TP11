@@ -4,6 +4,8 @@
 /////////////////////////////////////////////////////////////////
 
 #include <iostream>
+#include "AllegroClass.h"
+#include "Nodo.h"
 #include "parseCmdLine.h"
 #include "parameters.h"
 
@@ -14,31 +16,63 @@ int main(int argc, char * argv[]) {
 	parameters_t params;
 
 	if (parseCmdLine(argc, argv, &parseCallback, &params) > 0) {
+	}
 
-		//createNodes();
+	allegroClass al_class(4);
+	std::vector<Nodo*> nodos;
 
-		//while (checkConnectivity()) //BFS o DFS...
-		//	makeConnections();
+	Nodo n1(true), n2(false), n3(false), n4(false);
 
-		//for (Node N in Graph) {
+	n1.connectedNodes.push_back(&n2);
+	n1.connectedNodes.push_back(&n3);
+	n1.connectedNodes.push_back(&n4);
+	n1.selected = true;
 
-		//	if (N.hasTX2Send())
-		//		N.sendTX();
+	n2.connectedNodes.push_back(&n1);
+	n2.connectedNodes.push_back(nullptr);
+	n2.connectedNodes.push_back(nullptr);
 
-		//} //Primero se envian todas las transacciones, apilandose en una cola como en networking, y luego se procesan.
+	n3.connectedNodes.push_back(&n1);
+	n3.connectedNodes.push_back(&n4);
+	n3.connectedNodes.push_back(nullptr);
 
-		//for (Node N in Graph) {
-		//	if (N.TXArrived)
-		//		N.VerifyTxQueue();
-		//}
+	n4.connectedNodes.push_back(&n3);
+	n4.connectedNodes.push_back(nullptr);
+	n4.connectedNodes.push_back(nullptr);
 
-		//for (N in graph) {
-		//	if (N.isMiner())
-		//		N.OneMine(); //ONE MIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIINE
-		//}
+	nodos.push_back(&n1);
+	nodos.push_back(&n2);
+	nodos.push_back(&n3);
+	nodos.push_back(&n4);
+
+	al_class.updateDisplay(nodos);
+
+	getchar();
+
+	//createNodes();
+
+	//while (checkConnectivity()) //BFS o DFS...
+	//	makeConnections();
+
+	//for (Node N in Graph) {
+
+	//	if (N.hasTX2Send())
+	//		N.sendTX();
+
+	//} //Primero se envian todas las transacciones, apilandose en una cola como en networking, y luego se procesan.
+
+	//for (Node N in Graph) {
+	//	if (N.TXArrived)
+	//		N.VerifyTxQueue();
+	//}
+
+	//for (N in graph) {
+	//	if (N.isMiner())
+	//		N.OneMine(); //ONE MIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIINE
+	//}
 
 
-		//createTX(N1, N2, 7); //Mando 7 EDACoins del nodo 1 al nodo 2
+	//createTX(N1, N2, 7); //Mando 7 EDACoins del nodo 1 al nodo 2
 
 		////----------------------------//
 		//// ALLEGRO	- Input y eventos //
@@ -46,7 +80,6 @@ int main(int argc, char * argv[]) {
 
 		getchar();
 
-	}
 
 	return 0;
 }

@@ -15,11 +15,12 @@ public:
 
 
 	//Si el nodo es minero
+
 	mine(); //Minar = Probar un solo valor por nodo minero en cada loop.
 	createBlock();
 
 private:
-
+	bool isMiner(); //Esto se decide al momento de construir y no vuelve a modificarse.
 
 
 };

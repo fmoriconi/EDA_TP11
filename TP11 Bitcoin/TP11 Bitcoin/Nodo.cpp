@@ -77,7 +77,7 @@ int Nodo::findClosestBiggerValue(value_t val, valueTypes valueType)
 
 bool Nodo::sumLowerValues(value_t val, valueTypes valueType)
 {
-	value_t totalValue;
+	value_t totalValue = 0;
 	int i = 0;
 
 	for (UTXO utxo : this->UTXOs) { //Este FOR encuentra el UTXO con el valor mas grande mas cercano

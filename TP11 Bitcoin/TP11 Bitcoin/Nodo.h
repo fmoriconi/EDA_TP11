@@ -27,11 +27,15 @@ public:
 	std::vector<UTXO> outputQueue;
 	std::vector<UTXO> UTXOs;
 
+	std::vector<Nodo*> connectedNodes;
+
 	bool prepareOutputTransaction(value_t val, valueTypes valueType);
 
 	bool selected;
 	void setID(ID id_) { (this->id = id_); }
 	ID getID() { return this->id; }
+	value_t getBalance() { return this->EDAcoinsBalance; }
+	bool getIsMiner() { return this->isMiner; }
 
 private:
 

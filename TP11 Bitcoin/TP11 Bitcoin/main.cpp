@@ -1,3 +1,8 @@
+
+/////////////////////////////////////////////////////////////////
+///////////////////AGUANTE BITCOIN VIEJA/////////////////////////
+/////////////////////////////////////////////////////////////////
+
 #include <iostream>
 //#include "cryptopp"
 int main(int argc, char * argv[]) {
@@ -6,9 +11,6 @@ int main(int argc, char * argv[]) {
 
 	while (checkConnectivity()) //BFS o DFS...
 		makeConnections();
-
-
-
 
 	for (Node N in Graph) {
 

@@ -136,11 +136,13 @@
     <ClCompile Include="Grafo.cpp" />
     <ClCompile Include="main.cpp" />
     <ClCompile Include="Nodo.cpp" />
+    <ClCompile Include="UTXO.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="AllegroClass.h" />
     <ClInclude Include="Grafo.h" />
     <ClInclude Include="Nodo.h" />
+    <ClInclude Include="UTXO.h" />
   </ItemGroup>
   <ItemGroup>
     <None Include="packages.config" />

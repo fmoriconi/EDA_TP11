@@ -7,6 +7,7 @@
 //#include "cryptopp"
 int main(int argc, char * argv[]) {
 
+
 	createNodes();
 
 	while (checkConnectivity()) //BFS o DFS...

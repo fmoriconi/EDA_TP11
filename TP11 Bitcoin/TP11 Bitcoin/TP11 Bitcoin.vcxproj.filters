@@ -27,6 +27,9 @@
     <ClCompile Include="AllegroClass.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
+    <ClCompile Include="UTXO.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Nodo.h">
@@ -36,6 +39,9 @@
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="AllegroClass.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="UTXO.h">
       <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>

@@ -6,8 +6,17 @@
 #include <iostream>
 #include "AllegroClass.h"
 #include "Nodo.h"
+#include "parseCmdLine.h"
+#include "parameters.h"
+
 //#include "cryptopp"
+
 int main(int argc, char * argv[]) {
+
+	parameters_t params;
+
+	if (parseCmdLine(argc, argv, &parseCallback, &params) > 0) {
+	}
 
 	allegroClass al_class(4);
 	std::vector<Nodo*> nodos;
@@ -65,10 +74,14 @@ int main(int argc, char * argv[]) {
 
 	//createTX(N1, N2, 7); //Mando 7 EDACoins del nodo 1 al nodo 2
 
-	//----------------------------//
-	// ALLEGRO	- Input y eventos //
-	//----------------------------//
+		////----------------------------//
+		//// ALLEGRO	- Input y eventos //
+		////----------------------------//
 
+		getchar();
+
+
+	return 0;
 }
 
 //Si nos da una embolia, revisar bitcoinbook en gitHub. Sirve para entender los conceptos.

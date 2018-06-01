@@ -96,4 +96,5 @@ bool Nodo::sumLowerValues(value_t val, valueTypes valueType)
 			i++;
 
 	}
+	return true;
 }

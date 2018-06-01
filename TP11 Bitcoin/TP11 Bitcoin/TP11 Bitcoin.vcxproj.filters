@@ -13,36 +13,75 @@
       <UniqueIdentifier>{67DA6AB6-F800-4c08-8B7A-83BB121AAD01}</UniqueIdentifier>
       <Extensions>rc;ico;cur;bmp;dlg;rc2;rct;bin;rgs;gif;jpg;jpeg;jpe;resx;tiff;tif;png;wav;mfcribbon-ms</Extensions>
     </Filter>
+    <Filter Include="Source Files\Front">
+      <UniqueIdentifier>{2b3d86f8-70db-4ca7-ac20-fd78dd9e4625}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Source Files\Back">
+      <UniqueIdentifier>{c13e026d-3e10-40c1-bf30-952a5cba163c}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Source Files\Back\Parser">
+      <UniqueIdentifier>{9f5e1bf4-8c3f-4aff-ab5a-9e7ad11a3e72}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Source Files\Back\Grafos + Nodos">
+      <UniqueIdentifier>{34163891-ef83-4882-848c-3ab92dccfed0}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Header Files\Front">
+      <UniqueIdentifier>{9c036155-b36a-43a8-9d75-a6a65962c33e}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Header Files\Backend">
+      <UniqueIdentifier>{7f13266f-5045-4808-aa6e-bb276ff7916f}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Header Files\Backend\Parser">
+      <UniqueIdentifier>{0aecd0cd-af70-4a14-81b7-d4ae060852f4}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Header Files\Backend\Grafos + Nodos">
+      <UniqueIdentifier>{b15439ac-c69c-491d-854b-1da541b50e8f}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="main.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="Nodo.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="Grafo.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
     <ClCompile Include="AllegroClass.cpp">
-      <Filter>Source Files</Filter>
+      <Filter>Source Files\Front</Filter>
+    </ClCompile>
+    <ClCompile Include="parseCmdLine.cpp">
+      <Filter>Source Files\Back\Parser</Filter>
+    </ClCompile>
+    <ClCompile Include="parser.cpp">
+      <Filter>Source Files\Back\Parser</Filter>
+    </ClCompile>
+    <ClCompile Include="Nodo.cpp">
+      <Filter>Source Files\Back\Grafos + Nodos</Filter>
     </ClCompile>
     <ClCompile Include="UTXO.cpp">
-      <Filter>Source Files</Filter>
+      <Filter>Source Files\Back\Grafos + Nodos</Filter>
+    </ClCompile>
+    <ClCompile Include="Grafo.cpp">
+      <Filter>Source Files\Back\Grafos + Nodos</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="Nodo.h">
-      <Filter>Header Files</Filter>
+    <ClInclude Include="AllegroClass.h">
+      <Filter>Header Files\Front</Filter>
+    </ClInclude>
+    <ClInclude Include="parseCmdLine.h">
+      <Filter>Header Files\Backend\Parser</Filter>
+    </ClInclude>
+    <ClInclude Include="parser.h">
+      <Filter>Header Files\Backend\Parser</Filter>
     </ClInclude>
     <ClInclude Include="Grafo.h">
-      <Filter>Header Files</Filter>
+      <Filter>Header Files\Backend\Grafos + Nodos</Filter>
     </ClInclude>
-    <ClInclude Include="AllegroClass.h">
-      <Filter>Header Files</Filter>
+    <ClInclude Include="Nodo.h">
+      <Filter>Header Files\Backend\Grafos + Nodos</Filter>
     </ClInclude>
     <ClInclude Include="UTXO.h">
-      <Filter>Header Files</Filter>
+      <Filter>Header Files\Backend\Grafos + Nodos</Filter>
+    </ClInclude>
+    <ClInclude Include="parameters.h">
+      <Filter>Header Files\Backend\Parser</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>

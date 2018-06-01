@@ -13,5 +13,6 @@ public:
 
 private:
 	void enumNodes();
+	void createConnections();
 };
 

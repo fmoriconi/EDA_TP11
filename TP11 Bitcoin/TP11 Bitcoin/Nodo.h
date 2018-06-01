@@ -33,6 +33,8 @@ public:
 	void setID(ID id_) { (this->id = id_); }
 	ID getID() { return this->id; }
 
+	std::vector<Nodo *> connectedNodes;
+
 private:
 
 	bool isMiner; //Esto se decide al momento de construir y no vuelve a modificarse.

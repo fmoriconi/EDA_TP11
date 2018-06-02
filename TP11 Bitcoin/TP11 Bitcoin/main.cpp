@@ -21,6 +21,8 @@ int main(int argc, char * argv[]) {
 
 		allegroClass al_class(graph.nodes.size());
 
+		graph.nodes[5]->selected = true;
+
 		al_class.updateDisplay(graph.nodes);
 
 		//createNodes();

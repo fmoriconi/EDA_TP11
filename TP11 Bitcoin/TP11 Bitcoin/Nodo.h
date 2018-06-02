@@ -39,7 +39,7 @@ public:
 
 private:
 
-	bool isMiner; //Esto se decide al momento de construir y no vuelve a modificarse.
+	bool isMiner = false; //Esto se decide al momento de construir y no vuelve a modificarse.
 	
 	value_t EDAcoinsBalance; //El total de EDACoins que tiene el nodo.
 	void updateBalance();

@@ -50,12 +50,10 @@ allegroClass::allegroClass(unsigned quantity_) : quantity(quantity_)
 		std::cout << "ERROR: Failed to initialize allegro system\n" << std::endl;
 
 	if (goodInit) {
+		pick = al_create_bitmap(150, 150);
+		pick = al_load_bitmap("pick.png");
 		calculateVertices();
 	}
-
-}
-void allegroClass::newBitmap(ALLEGRO_BITMAP * bitmap_)
-{
 
 }
 
@@ -117,15 +115,23 @@ void allegroClass::drawNodes(std::vector<Nodo*>& nodos)
 	int j;
 
 	for (int i = 0, j = 0; i < quantity * 2; i += 2) {
-		if (nodos[j]->selected)
+		if (nodos[j]->selected) {
 			al_draw_filled_circle(vert[i], vert[i + 1], CIRCLE_RADIUS - (quantity / 2), AL_DARK_ORANGE);
-		else
+			if (nodos[j]->getIsMiner()) {
+				al_draw_scaled_bitmap(pick, 0, 0, 150, 150, vert[i] - 5, vert[i + 1] - 24, PICK_SIZE, PICK_SIZE, NULL);
+			}
+		}
+		else {
 			al_draw_filled_circle(vert[i], vert[i + 1], CIRCLE_RADIUS - (quantity / 2), AL_ORANGE);
+			if (nodos[j]->getIsMiner()) {
+				al_draw_scaled_bitmap(pick,0, 0, 150, 150, vert[i] - 5, vert[i + 1] -24, PICK_SIZE, PICK_SIZE, NULL);
+				al_flip_display();
+			}
+		}
 
 		al_draw_text(smallfont, AL_BLACK, vert[i], vert[i + 1] - SMALLFONT_SIZE / 2, ALLEGRO_ALIGN_CENTER, std::to_string(j).c_str());
 		j++;
 	}
-
 }
 
 void allegroClass::calculateVertices() {
@@ -160,6 +166,11 @@ void allegroClass::drawConnection(std::vector<Nodo*>& nodos)
 			}
 		}
 	}
+}
+
+EDAevent allegroClass::getInput()
+{
+
 }
 
 ALLEGRO_EVENT_QUEUE * allegroClass::getEventQueue()

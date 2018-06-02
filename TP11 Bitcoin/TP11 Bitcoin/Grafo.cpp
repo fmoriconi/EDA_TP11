@@ -14,7 +14,7 @@ Grafo::Grafo(unsigned int nodeQty,unsigned int minerQty )
 			minerQty--; //Si son mineros, entrara aqui hasta que ya no necesite crear mas mineros.
 		}
 		else {
-			Nodo * node = new Nodo(true);
+			Nodo * node = new Nodo(false);
 			this->nodes.push_back(node);
 		}
 	}

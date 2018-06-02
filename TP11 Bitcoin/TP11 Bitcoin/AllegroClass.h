@@ -12,6 +12,7 @@
 #include <vector>
 #include <string>
 #include "Nodo.h"
+#include "EDAevent.h"
 
 #define SCREEN_W (1000)
 #define SCREEN_H (600)
@@ -51,8 +52,7 @@
 #define INFO_WINDOW_TEXT_Y3 (INFO_WINDOW_TEXT_Y2 + 40 - SMALLFONT_SIZE/2)
 #define INFO_WINDOW_TEXT_Y4 (INFO_WINDOW_TEXT_Y3+ 40 - SMALLFONT_SIZE/2)
 #define INFO_WINDOW_TEXT_Y5 (INFO_WINDOW_TEXT_Y4 + 40 - SMALLFONT_SIZE/2)
-
-enum class BITMAPS {MINER};
+#define PICK_SIZE 15
 
 class allegroClass
 	{
@@ -65,15 +65,16 @@ class allegroClass
 		void drawNodes(std::vector<Nodo*>& nodos);
 		void drawConnection(std::vector<Nodo*>& nodos);
 		unsigned int drawInfo = 0;
+		EDAevent getInput();
 	private:
 		ALLEGRO_DISPLAY * display = NULL;
 		ALLEGRO_EVENT_QUEUE * ev_queue = NULL;
 		ALLEGRO_TIMER * timer = NULL;
 		ALLEGRO_FONT* smallfont = NULL;
 		ALLEGRO_FONT* bigfont = NULL;
+		ALLEGRO_BITMAP* pick = NULL;
 		std::vector<ALLEGRO_BITMAP*> bitmaps;
 		std::vector<int> vert;
-		void newBitmap(ALLEGRO_BITMAP* bitmap_);
 		void drawButton(unsigned x1, unsigned y1, unsigned x2, unsigned y2, ALLEGRO_COLOR color, std::string msg);
 		void infoWindow(Nodo* nodito);
 		unsigned quantity;

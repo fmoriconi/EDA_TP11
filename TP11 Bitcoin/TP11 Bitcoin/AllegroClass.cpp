@@ -153,7 +153,7 @@ void allegroClass::calculateVertices() {
 void allegroClass::drawConnection(std::vector<Nodo*>& nodos)
 {
 	for (int i = 0; i < quantity; i++) {
-		for (int j = 0; j < 3; j++) {
+		for (int j = 0; j < nodos[i]->connectedNodes.size(); j++) {
 			Nodo* auxNodo = nodos[i]->connectedNodes[j];
 			if (auxNodo != nullptr) {
 				al_draw_line(vert[2 * i], vert[(2 * i) + 1], vert[2 * (auxNodo->getID())], vert[(2 * (auxNodo->getID())) + 1], AL_DARK_ORANGE, 3);

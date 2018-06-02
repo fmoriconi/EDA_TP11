@@ -9,12 +9,12 @@ Grafo::Grafo(unsigned int nodeQty,unsigned int minerQty )
 
 	for (; nodeQty != 0; nodeQty--) { //Creo los nodos y los pusheo al vector.
 		if (minerQty != 0) {
-			Nodo node(true);
+			Nodo * node = new Nodo(true);
 			this->nodes.push_back(node);
 			minerQty--; //Si son mineros, entrara aqui hasta que ya no necesite crear mas mineros.
 		}
 		else {
-			Nodo node(false);
+			Nodo * node = new Nodo(true);
 			this->nodes.push_back(node);
 		}
 	}
@@ -23,6 +23,7 @@ Grafo::Grafo(unsigned int nodeQty,unsigned int minerQty )
 
 	enumNodes();
 	createConnections();
+
 }
 
 
@@ -34,35 +35,36 @@ void Grafo::enumNodes()
 {
 	int i = 0;
 
-	for (Nodo node : this->nodes) {
-		node.setID(i);
+	for (Nodo * node : this->nodes) {
+		node->setID(i);
 		i++;
 	}
 }
 
 void Grafo::createConnections() {
 
-	for (Nodo node : this->nodes) {
+	for (Nodo * node : this->nodes) {
 
 		ID connectTo; //ID del nodo al cual me voy a conectar.
 		unsigned int attempts = 0; //Cantidad de intentos de conectarse. Para romper el loop si no se puede conectar.
 
-		while ( (node.connectedNodes.size() < 2) && (attempts <= nodes.size()) ) {
+		while ( (node->connectedNodes.size() < 2) && (attempts <= nodes.size()) ) {
 
 			connectTo = (rand() % this->nodes.size()); //Elijo un numero de 0 a la cantidad de nodos - 1.
 			
-			if (connectTo != node.getID()) { //No puedo conectarme a mi mismo.
+			if (connectTo != node->getID()) { //No puedo conectarme a mi mismo.
 
-				if (node.connectedNodes.size() == 0) { //Si no me conecte a nada, no debo evaluar si ya me conecte
+				if (node->connectedNodes.size() == 0) { //Si no me conecte a nada, no debo evaluar si ya me conecte
 
-					if (nodes.at(connectTo).connectedNodes.size() < 2) { //Busco el nodo al cual intento conectarme y me fijo si sigue con conexiones disponibles.
-						node.connectedNodes.push_back(&(this->nodes.at(connectTo))); //Me conecto al nodo.
-
+					if (nodes.at(connectTo)->connectedNodes.size() < 2) { //Busco el nodo al cual intento conectarme y me fijo si sigue con conexiones disponibles.
+						node->connectedNodes.push_back(this->nodes.at(connectTo)); //Me conecto al nodo.
+						nodes.at(connectTo)->connectedNodes.push_back(node);
 					}
 				}
-				else if (node.connectedNodes.at(0) != &(this->nodes.at(connectTo))) { //Si ya me conecte a otro nodo antes tengo que mirar si me estoy tratando de conectar al mismo.
-					if (nodes.at(connectTo).connectedNodes.size() < 2) { //Y me fijo si tiene conexiones libres.
-						node.connectedNodes.push_back(&(this->nodes.at(connectTo)));
+				else if (node->connectedNodes.at(0) != this->nodes.at(connectTo)) { //Si ya me conecte a otro nodo antes tengo que mirar si me estoy tratando de conectar al mismo.
+					if (nodes.at(connectTo)->connectedNodes.size() < 2) { //Y me fijo si tiene conexiones libres.
+						node->connectedNodes.push_back(this->nodes.at(connectTo));
+						nodes.at(connectTo)->connectedNodes.push_back(node);
 
 					}
 				}

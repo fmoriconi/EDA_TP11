@@ -8,6 +8,7 @@
 #include "Nodo.h"
 #include "parseCmdLine.h"
 #include "parameters.h"
+#include "Grafo.h"
 
 //#include "cryptopp"
 
@@ -16,70 +17,76 @@ int main(int argc, char * argv[]) {
 	parameters_t params;
 
 	if (parseCmdLine(argc, argv, &parseCallback, &params) > 0) {
-	}
-
-	allegroClass al_class(4);
-	std::vector<Nodo*> nodos;
-
-	Nodo n1(true), n2(false), n3(false), n4(false);
-
-	n1.connectedNodes.push_back(&n2);
-	n1.connectedNodes.push_back(&n3);
-	n1.connectedNodes.push_back(&n4);
-	n1.selected = true;
-
-	n2.connectedNodes.push_back(&n1);
-	n2.connectedNodes.push_back(nullptr);
-	n2.connectedNodes.push_back(nullptr);
-
-	n3.connectedNodes.push_back(&n1);
-	n3.connectedNodes.push_back(&n4);
-	n3.connectedNodes.push_back(nullptr);
-
-	n4.connectedNodes.push_back(&n3);
-	n4.connectedNodes.push_back(nullptr);
-	n4.connectedNodes.push_back(nullptr);
-
-	nodos.push_back(&n1);
-	nodos.push_back(&n2);
-	nodos.push_back(&n3);
-	nodos.push_back(&n4);
-
-	al_class.updateDisplay(nodos);
-
-	getchar();
-
-	//createNodes();
-
-	//while (checkConnectivity()) //BFS o DFS...
-	//	makeConnections();
-
-	//for (Node N in Graph) {
-
-	//	if (N.hasTX2Send())
-	//		N.sendTX();
-
-	//} //Primero se envian todas las transacciones, apilandose en una cola como en networking, y luego se procesan.
-
-	//for (Node N in Graph) {
-	//	if (N.TXArrived)
-	//		N.VerifyTxQueue();
-	//}
-
-	//for (N in graph) {
-	//	if (N.isMiner())
-	//		N.OneMine(); //ONE MIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIINE
-	//}
 
 
-	//createTX(N1, N2, 7); //Mando 7 EDACoins del nodo 1 al nodo 2
 
-		////----------------------------//
-		//// ALLEGRO	- Input y eventos //
-		////----------------------------//
+		Grafo graph(params.nodes, params.miners);
+
+		allegroClass al_class(graph.nodes.size());
+
+		//std::vector<Nodo*> nodos;
+
+		//Nodo n1(true), n2(false), n3(false), n4(false);
+
+		//n1.connectedNodes.push_back(&n2);
+		//n1.connectedNodes.push_back(&n3);
+		//n1.connectedNodes.push_back(&n4);
+		//n1.selected = true;
+
+		//n2.connectedNodes.push_back(&n1);
+		//n2.connectedNodes.push_back(nullptr);
+		//n2.connectedNodes.push_back(nullptr);
+
+		//n3.connectedNodes.push_back(&n1);
+		//n3.connectedNodes.push_back(&n4);
+		//n3.connectedNodes.push_back(nullptr);
+
+		//n4.connectedNodes.push_back(&n3);
+		//n4.connectedNodes.push_back(nullptr);
+		//n4.connectedNodes.push_back(nullptr);
+
+		//nodos.push_back(&n1);
+		//nodos.push_back(&n2);
+		//nodos.push_back(&n3);
+		//nodos.push_back(&n4);
+
+		al_class.updateDisplay(graph.nodes);
+
+		int i = 0;
+		getchar();
+
+		//createNodes();
+
+		//while (checkConnectivity()) //BFS o DFS...
+		//	makeConnections();
+
+		//for (Node N in Graph) {
+
+		//	if (N.hasTX2Send())
+		//		N.sendTX();
+
+		//} //Primero se envian todas las transacciones, apilandose en una cola como en networking, y luego se procesan.
+
+		//for (Node N in Graph) {
+		//	if (N.TXArrived)
+		//		N.VerifyTxQueue();
+		//}
+
+		//for (N in graph) {
+		//	if (N.isMiner())
+		//		N.OneMine(); //ONE MIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIINE
+		//}
+
+
+		//createTX(N1, N2, 7); //Mando 7 EDACoins del nodo 1 al nodo 2
+
+			////----------------------------//
+			//// ALLEGRO	- Input y eventos //
+			////----------------------------//
 
 		getchar();
 
+	}
 
 	return 0;
 }

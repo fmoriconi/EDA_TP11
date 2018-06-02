@@ -9,7 +9,7 @@ public:
 	Grafo(unsigned int nodeQty, unsigned int minerQty);
 	~Grafo();
 
-	std::vector<Nodo> nodes; // Vector con los nodos
+	std::vector<Nodo *> nodes;
 
 private:
 	void enumNodes();

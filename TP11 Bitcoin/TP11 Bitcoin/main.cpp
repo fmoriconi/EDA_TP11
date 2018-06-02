@@ -20,10 +20,15 @@ int main(int argc, char * argv[]) {
 		Grafo graph(params.nodes, params.miners);
 
 		allegroClass al_class(graph.nodes.size());
+		al_class.drawConnection(graph.nodes);
 
-		graph.nodes[5]->selected = true;
+		EDAevent ev;
+		ev.type = EDAEVENT_TYPE::NOEVENT;
 
-		al_class.updateDisplay(graph.nodes);
+		do {
+			ev = al_class.getInput(graph.nodes);
+			al_class.updateDisplay(graph.nodes);
+		} while (ev.type != EDAEVENT_TYPE::QUIT);
 
 		//createNodes();
 
@@ -53,8 +58,6 @@ int main(int argc, char * argv[]) {
 			////----------------------------//
 			//// ALLEGRO	- Input y eventos //
 			////----------------------------//
-
-		getchar();
 
 	}
 

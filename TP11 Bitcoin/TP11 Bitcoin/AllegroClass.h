@@ -13,6 +13,7 @@
 #include <string>
 #include "Nodo.h"
 #include "EDAevent.h"
+#include "Timer.h"
 
 #define SCREEN_W (1000)
 #define SCREEN_H (600)
@@ -53,6 +54,7 @@
 #define INFO_WINDOW_TEXT_Y4 (INFO_WINDOW_TEXT_Y3+ 40 - SMALLFONT_SIZE/2)
 #define INFO_WINDOW_TEXT_Y5 (INFO_WINDOW_TEXT_Y4 + 40 - SMALLFONT_SIZE/2)
 #define PICK_SIZE 15
+#define DOUBLE_CLICK_TIME 10000
 
 class allegroClass
 	{
@@ -65,7 +67,7 @@ class allegroClass
 		void drawNodes(std::vector<Nodo*>& nodos);
 		void drawConnection(std::vector<Nodo*>& nodos);
 		unsigned int drawInfo = 0;
-		EDAevent getInput();
+		EDAevent& getInput(std::vector<Nodo*>& nodos);
 	private:
 		ALLEGRO_DISPLAY * display = NULL;
 		ALLEGRO_EVENT_QUEUE * ev_queue = NULL;
@@ -78,5 +80,11 @@ class allegroClass
 		void drawButton(unsigned x1, unsigned y1, unsigned x2, unsigned y2, ALLEGRO_COLOR color, std::string msg);
 		void infoWindow(Nodo* nodito);
 		unsigned quantity;
+		bool firstclick = false;
+		bool firstletgo = false;
+		bool secondclick = false;
+		Timer doubleClickTimer;
+		Timer doubleClickOutTimer;
+		Timer graphingIssues;
 	};
 

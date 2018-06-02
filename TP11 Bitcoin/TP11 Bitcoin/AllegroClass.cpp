@@ -13,12 +13,12 @@ allegroClass::allegroClass(unsigned quantity_) : quantity(quantity_)
 					if (al_init_primitives_addon()) {
 						if (al_init_font_addon()) {
 							if (al_init_ttf_addon()) {
-								if (al_install_keyboard()) {
+								if (al_install_mouse()) {
 									if ((ev_queue = al_create_event_queue())) {
 										if ((display = al_create_display(SCREEN_W, SCREEN_H))) {
 											this->smallfont = al_load_font("font.ttf", -SMALLFONT_SIZE, NULL);
 											this->bigfont = al_load_font("font.ttf", -BIGFONT_SIZE, NULL);
-											al_register_event_source(this->ev_queue, al_get_keyboard_event_source());
+											//al_register_event_source(this->ev_queue, al_get_mouse_event_source());
 											al_register_event_source(this->ev_queue, al_get_display_event_source(this->display));
 											al_set_window_title(display, "EDAcoin Mining Facility.encd");
 											ALLEGRO_BITMAP * icon = al_load_bitmap("icon.png");
@@ -104,7 +104,6 @@ void allegroClass::updateDisplay(std::vector<Nodo*>& nodos)
 			infoWindow(nodito);
 		}
 	}
-	drawConnection(nodos);
 	drawNodes(nodos);
 	al_flip_display();
 }
@@ -124,11 +123,11 @@ void allegroClass::drawNodes(std::vector<Nodo*>& nodos)
 		else {
 			al_draw_filled_circle(vert[i], vert[i + 1], CIRCLE_RADIUS - (quantity / 2), AL_ORANGE);
 			if (nodos[j]->getIsMiner()) {
-				al_draw_scaled_bitmap(pick,0, 0, 150, 150, vert[i] - 5, vert[i + 1] -24, PICK_SIZE, PICK_SIZE, NULL);
+				al_draw_scaled_bitmap(pick, 0, 0, 150, 150, vert[i] - 5, vert[i + 1] - 24, PICK_SIZE, PICK_SIZE, NULL);
 				al_flip_display();
 			}
 		}
-
+		graphingIssues.wait(5);
 		al_draw_text(smallfont, AL_BLACK, vert[i], vert[i + 1] - SMALLFONT_SIZE / 2, ALLEGRO_ALIGN_CENTER, std::to_string(j).c_str());
 		j++;
 	}
@@ -168,9 +167,54 @@ void allegroClass::drawConnection(std::vector<Nodo*>& nodos)
 	}
 }
 
-EDAevent allegroClass::getInput()
+EDAevent& allegroClass::getInput(std::vector<Nodo*>& nodos)
 {
+	EDAevent ev = { EDAEVENT_TYPE::NOEVENT };
+	ALLEGRO_EVENT aev;
+	ALLEGRO_MOUSE_STATE mstate;
 
+	al_get_mouse_state(&mstate);
+	if (mstate.buttons & 1 && firstletgo) {
+		doubleClickTimer.stop();
+		if (doubleClickTimer.getTime() < DOUBLE_CLICK_TIME) {
+			for (int i = 0; i < nodos.size(); i++) {
+				if (mstate.x > vert[2 * i] - CIRCLE_RADIUS && mstate.x < vert[2 * i] + CIRCLE_RADIUS && mstate.y > vert[(2 * i) + 1] - CIRCLE_RADIUS && mstate.y < vert[(2 * i) + 1] + CIRCLE_RADIUS) {
+					nodos[i]->selected = true;
+					for (int j = 0; j < nodos.size(); j++) {
+						if (nodos[j]->selected && j != i)
+							nodos[j]->selected = false;
+					}
+				}
+			}
+		}
+	}
+	if (!(mstate.buttons & 1) && firstclick) {
+		firstletgo = true;
+	}
+	if (mstate.buttons & 1) {
+		firstclick = true;
+		doubleClickTimer.start();
+	}
+
+	/*for (int i = 0; i < nodos.size(); i++) {
+		if (mstate.x > vert[2 * i] - CIRCLE_RADIUS && mstate.x < vert[2 * i] + CIRCLE_RADIUS && mstate.y > vert[(2 * i) + 1] - CIRCLE_RADIUS && mstate.y < vert[(2 * i) + 1] + CIRCLE_RADIUS) {
+			if (clickednodes.at(i)) {
+				nodos[i]->selected = true;
+				for (int j = 0; j < nodos.size(); j++) {
+					if (nodos[j]->selected && j != i)
+						nodos[j]->selected = false;
+				}
+			}
+		}
+	}*/
+
+	if (al_get_next_event(this->ev_queue, &aev)) {
+		if (aev.type == ALLEGRO_EVENT_DISPLAY_CLOSE) {
+			ev.type = EDAEVENT_TYPE::QUIT;
+		}
+	}
+
+	return ev;
 }
 
 ALLEGRO_EVENT_QUEUE * allegroClass::getEventQueue()

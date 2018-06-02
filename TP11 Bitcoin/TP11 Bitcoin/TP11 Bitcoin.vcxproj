@@ -141,6 +141,7 @@
     <ClCompile Include="Nodo.cpp" />
     <ClCompile Include="parseCmdLine.cpp" />
     <ClCompile Include="parser.cpp" />
+    <ClCompile Include="Timer.cpp" />
     <ClCompile Include="UTXO.cpp" />
   </ItemGroup>
   <ItemGroup>
@@ -151,6 +152,7 @@
     <ClInclude Include="parameters.h" />
     <ClInclude Include="parseCmdLine.h" />
     <ClInclude Include="parser.h" />
+    <ClInclude Include="Timer.h" />
     <ClInclude Include="UTXO.h" />
   </ItemGroup>
   <ItemGroup>

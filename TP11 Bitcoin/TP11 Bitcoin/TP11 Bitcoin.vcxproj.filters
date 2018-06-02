@@ -63,6 +63,9 @@
     <ClCompile Include="Grafo.cpp">
       <Filter>Source Files\Back\Grafos + Nodos</Filter>
     </ClCompile>
+    <ClCompile Include="Timer.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="AllegroClass.h">
@@ -88,6 +91,9 @@
     </ClInclude>
     <ClInclude Include="EDAevent.h">
       <Filter>Header Files\Events</Filter>
+    </ClInclude>
+    <ClInclude Include="Timer.h">
+      <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>

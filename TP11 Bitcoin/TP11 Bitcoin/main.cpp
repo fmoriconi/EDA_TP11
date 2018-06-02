@@ -1,4 +1,3 @@
-
 /////////////////////////////////////////////////////////////////
 ///////////////////AGUANTE BITCOIN VIEJA/////////////////////////
 /////////////////////////////////////////////////////////////////
@@ -18,42 +17,11 @@ int main(int argc, char * argv[]) {
 
 	if (parseCmdLine(argc, argv, &parseCallback, &params) > 0) {
 
-
-
 		Grafo graph(params.nodes, params.miners);
 
 		allegroClass al_class(graph.nodes.size());
 
-		//std::vector<Nodo*> nodos;
-
-		//Nodo n1(true), n2(false), n3(false), n4(false);
-
-		//n1.connectedNodes.push_back(&n2);
-		//n1.connectedNodes.push_back(&n3);
-		//n1.connectedNodes.push_back(&n4);
-		//n1.selected = true;
-
-		//n2.connectedNodes.push_back(&n1);
-		//n2.connectedNodes.push_back(nullptr);
-		//n2.connectedNodes.push_back(nullptr);
-
-		//n3.connectedNodes.push_back(&n1);
-		//n3.connectedNodes.push_back(&n4);
-		//n3.connectedNodes.push_back(nullptr);
-
-		//n4.connectedNodes.push_back(&n3);
-		//n4.connectedNodes.push_back(nullptr);
-		//n4.connectedNodes.push_back(nullptr);
-
-		//nodos.push_back(&n1);
-		//nodos.push_back(&n2);
-		//nodos.push_back(&n3);
-		//nodos.push_back(&n4);
-
 		al_class.updateDisplay(graph.nodes);
-
-		int i = 0;
-		getchar();
 
 		//createNodes();
 

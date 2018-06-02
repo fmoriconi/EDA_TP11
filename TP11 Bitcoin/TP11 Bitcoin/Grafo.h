@@ -14,5 +14,7 @@ public:
 private:
 	void enumNodes();
 	void createConnections();
+	void ensureGrafoConexo();
+	bool recursion(int i, std::vector<bool>& visited);
 };
 

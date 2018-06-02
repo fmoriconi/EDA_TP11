@@ -23,6 +23,7 @@ Grafo::Grafo(unsigned int nodeQty,unsigned int minerQty )
 
 	enumNodes();
 	createConnections();
+	ensureGrafoConexo();
 
 }
 
@@ -76,5 +77,69 @@ void Grafo::createConnections() {
 		}
 
 	}
+
+}
+
+void Grafo::ensureGrafoConexo()
+{
+	std::vector<bool> visited;
+
+	for (Nodo * node : this->nodes)
+		visited.push_back(false);
+
+	int i = 0;
+	bool allVisited = false;
+
+	while (!allVisited) {
+
+		for (bool visit : visited) {
+			visit = false; //Pongo todo en false devuelta.
+		}
+
+		recursion(i, visited);
+		allVisited = true; //Asumo que se visito todo hasta que se demuestre lo contrario.
+
+		for (bool visit : visited) {
+			if (visit == false)
+				allVisited = false;
+		}
+
+		if (!allVisited) {
+			int k = 0;
+		
+			for (bool visit : visited) {
+
+				if (visit == false) {
+					nodes.at(k)->connectedNodes.push_back(nodes.at(0));
+					nodes.at(0)->connectedNodes.push_back(nodes.at(k));
+				}
+
+				k++;
+
+			}
+		}
+	}
+
+}
+
+bool Grafo::recursion(int index, std::vector<bool>& visited) {
+
+
+	if (visited[index] == true)
+		return true;
+	else {
+
+		visited[index] = true;
+
+		int j = 0;
+
+		while (j < nodes.at(index)->connectedNodes.size()) {
+			int index_ = nodes.at(index)->connectedNodes.at(j)->getID();
+			recursion(index_, visited);
+			j++;
+		}
+
+	}
+
 
 }

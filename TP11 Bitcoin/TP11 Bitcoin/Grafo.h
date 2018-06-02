@@ -16,5 +16,6 @@ private:
 	void createConnections();
 	void ensureGrafoConexo();
 	bool recursion(int i, std::vector<bool>& visited);
+	int connectToVisited(std::vector<bool>& visited);
 };
 

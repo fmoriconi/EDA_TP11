@@ -49,7 +49,7 @@ void Grafo::createConnections() {
 		ID connectTo; //ID del nodo al cual me voy a conectar.
 		unsigned int attempts = 0; //Cantidad de intentos de conectarse. Para romper el loop si no se puede conectar.
 
-		while ( (node->connectedNodes.size() < 2) && (attempts <= nodes.size()) ) {
+		while ( (node->connectedNodes.size() < 2) && (attempts <= nodes.size()*5) ) { //Multiplico nodes.size por cinco simplemente para tener mas posibilidades de que le toque conectarse a un nodo con conexiones libres, pues recordemos que es al azar.
 
 			connectTo = (rand() % this->nodes.size()); //Elijo un numero de 0 a la cantidad de nodos - 1.
 			
@@ -92,8 +92,8 @@ void Grafo::ensureGrafoConexo()
 
 	while (!allVisited) {
 
-		for (bool visit : visited) {
-			visit = false; //Pongo todo en false devuelta.
+		for (int l = 0; l < visited.size(); l++) {
+			visited[l] = false; //Pongo todo en false devuelta.
 		}
 
 		recursion(i, visited);
@@ -110,8 +110,10 @@ void Grafo::ensureGrafoConexo()
 			for (bool visit : visited) {
 
 				if (visit == false) {
-					nodes.at(k)->connectedNodes.push_back(nodes.at(0));
-					nodes.at(0)->connectedNodes.push_back(nodes.at(k));
+					int nodeNumber = connectToVisited(visited);
+					nodes.at(k)->connectedNodes.push_back(nodes.at(nodeNumber));
+					nodes.at(nodeNumber)->connectedNodes.push_back(nodes.at(k));
+					break; // No quiero conectar todos los nodos inconexos, con solo uno alcanza. Vuelvo a probar a ver si persiste el problema.
 				}
 
 				k++;
@@ -142,4 +144,18 @@ bool Grafo::recursion(int index, std::vector<bool>& visited) {
 	}
 
 
+}
+
+int Grafo::connectToVisited(std::vector<bool>& visited) {
+
+	bool isVisited = false;
+	int vectorPos = NULL;
+	while (!isVisited) {
+
+		vectorPos = rand() % visited.size();
+
+		isVisited = visited.at(vectorPos);
+	}
+
+	return vectorPos;
 }

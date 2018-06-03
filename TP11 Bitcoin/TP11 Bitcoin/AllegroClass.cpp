@@ -105,7 +105,20 @@ void allegroClass::updateDisplay(std::vector<Nodo*>& nodos)
 		}
 	}
 	drawNodes(nodos);
-	al_flip_display();
+	if (payclick) {
+		payclick = false;
+		drawButton(PAY_BUTTON_X1, PAY_BUTTON_Y1, PAY_BUTTON_X2, PAY_BUTTON_Y2, AL_GREEN, PAY_BUTTON_TEXT);
+		al_flip_display();
+		showButtonPressed.wait(35); //sigue siendo no bloqueante
+	}
+	else if (mpayclick) {
+		mpayclick = false;
+		drawButton(MALICIOUS_PAY_BUTTON_X1, MALICIOUS_PAY_BUTTON_Y1, MALICIOUS_PAY_BUTTON_X2, MALICIOUS_PAY_BUTTON_Y2, AL_GREEN, MALICIOUS_PAY_BUTTON_TEXT);
+		al_flip_display();
+		showButtonPressed.wait(35);	//sigue siendo no bloqueante
+	}
+	else
+		al_flip_display();
 }
 
 void allegroClass::drawNodes(std::vector<Nodo*>& nodos)
@@ -124,10 +137,8 @@ void allegroClass::drawNodes(std::vector<Nodo*>& nodos)
 			al_draw_filled_circle(vert[i], vert[i + 1], CIRCLE_RADIUS - (quantity / 2), AL_ORANGE);
 			if (nodos[j]->getIsMiner()) {
 				al_draw_scaled_bitmap(pick, 0, 0, 150, 150, vert[i] - 5, vert[i + 1] - 24, PICK_SIZE, PICK_SIZE, NULL);
-				al_flip_display();
 			}
 		}
-		graphingIssues.wait(5);
 		al_draw_text(smallfont, AL_BLACK, vert[i], vert[i + 1] - SMALLFONT_SIZE / 2, ALLEGRO_ALIGN_CENTER, std::to_string(j).c_str());
 		j++;
 	}
@@ -169,7 +180,7 @@ void allegroClass::drawConnection(std::vector<Nodo*>& nodos)
 
 EDAevent& allegroClass::getInput(std::vector<Nodo*>& nodos)
 {
-	EDAevent ev = { EDAEVENT_TYPE::NOEVENT };
+	EDAevent ev;
 	ALLEGRO_EVENT aev;
 	ALLEGRO_MOUSE_STATE mstate;
 
@@ -198,17 +209,38 @@ EDAevent& allegroClass::getInput(std::vector<Nodo*>& nodos)
 		doubleClickTimer.start();
 	}
 
-	/*for (int i = 0; i < nodos.size(); i++) {
-		if (mstate.x > vert[2 * i] - CIRCLE_RADIUS && mstate.x < vert[2 * i] + CIRCLE_RADIUS && mstate.y > vert[(2 * i) + 1] - CIRCLE_RADIUS && mstate.y < vert[(2 * i) + 1] + CIRCLE_RADIUS) {
-			if (clickednodes.at(i)) {
-				nodos[i]->selected = true;
-				for (int j = 0; j < nodos.size(); j++) {
-					if (nodos[j]->selected && j != i)
-						nodos[j]->selected = false;
+	if (mstate.buttons & 1) { //esta es la parte de ver si clickea para el pago o pago malicioso
+		for (int i = 0; i < nodos.size(); i++) {
+			if (nodos[i]->selected) { //Si hay algun nodo seleccionado
+				if (mstate.x > PAY_BUTTON_X1 && mstate.x < PAY_BUTTON_X2 && mstate.y > PAY_BUTTON_Y1 && mstate.y < PAY_BUTTON_Y2) {
+					buttonClick = true;
+				}
+				if (mstate.x > MALICIOUS_PAY_BUTTON_X1 && mstate.x < MALICIOUS_PAY_BUTTON_X2 && mstate.y > MALICIOUS_PAY_BUTTON_Y1 && mstate.y < MALICIOUS_PAY_BUTTON_Y2) {
+					buttonClick = true;
 				}
 			}
 		}
-	}*/
+	}
+
+	if (!(mstate.buttons & 1) && buttonClick) {
+		for (int i = 0; i < nodos.size(); i++) {
+			if (nodos[i]->selected) { //Si hay algun nodo seleccionado
+				if (mstate.x > PAY_BUTTON_X1 && mstate.x < PAY_BUTTON_X2 && mstate.y > PAY_BUTTON_Y1 && mstate.y < PAY_BUTTON_Y2) {
+					showButtonPressed.start();
+					payclick = true;
+					ev.type = EDAEVENT_TYPE::PAY;
+					ev.id = i;
+				}
+				if (mstate.x > MALICIOUS_PAY_BUTTON_X1 && mstate.x < MALICIOUS_PAY_BUTTON_X2 && mstate.y > MALICIOUS_PAY_BUTTON_Y1 && mstate.y < MALICIOUS_PAY_BUTTON_Y2) {
+					showButtonPressed.start();
+					mpayclick = true;
+					ev.type = EDAEVENT_TYPE::M_PAY;
+					ev.id = i;
+				}
+			}
+		}
+		buttonClick = false;
+	}
 
 	if (al_get_next_event(this->ev_queue, &aev)) {
 		if (aev.type == ALLEGRO_EVENT_DISPLAY_CLOSE) {

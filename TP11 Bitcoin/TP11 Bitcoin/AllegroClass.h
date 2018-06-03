@@ -28,6 +28,7 @@
 #define TITLE_POS_Y (30)
 #define AL_ORANGE (al_map_rgb(255, 128, 0))
 #define AL_DARK_ORANGE (al_map_rgb(255, 64, 0))
+#define AL_GREEN (al_map_rgb(0, 153, 0))
 #define AL_BLACK (al_map_rgb(0,0,0))
 #define PAY_BUTTON_Y1 (END_Y - 100)
 #define PAY_BUTTON_Y2 (PAY_BUTTON_Y1 + 50)
@@ -53,8 +54,9 @@
 #define INFO_WINDOW_TEXT_Y3 (INFO_WINDOW_TEXT_Y2 + 40 - SMALLFONT_SIZE/2)
 #define INFO_WINDOW_TEXT_Y4 (INFO_WINDOW_TEXT_Y3+ 40 - SMALLFONT_SIZE/2)
 #define INFO_WINDOW_TEXT_Y5 (INFO_WINDOW_TEXT_Y4 + 40 - SMALLFONT_SIZE/2)
-#define PICK_SIZE 15
-#define DOUBLE_CLICK_TIME 150
+#define PICK_SIZE (15)
+#define DOUBLE_CLICK_TIME (150)
+#define SHOW_BUTTON_PRESSED_TIME 30
 
 class allegroClass
 	{
@@ -82,9 +84,10 @@ class allegroClass
 		unsigned quantity;
 		bool firstclick = false;
 		bool firstletgo = false;
-		bool secondclick = false;
+		bool buttonClick = false;
+		bool payclick = false;
+		bool mpayclick = false;
+		Timer showButtonPressed;
 		Timer doubleClickTimer;
-		Timer doubleClickOutTimer;
-		Timer graphingIssues;
 	};
 

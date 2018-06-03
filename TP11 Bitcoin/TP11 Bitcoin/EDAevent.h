@@ -2,10 +2,11 @@
 
 #include <queue>
 
-enum class EDAEVENT_TYPE {QUIT, NODE_SELECTED, PAY, M_PAY, MINED, AGREGARSEGUNSENECESITE, NOEVENT };
+enum class EDAEVENT_TYPE {QUIT, PAY, M_PAY, MINED, NOEVENT };
 
 typedef struct EDAevent {
-	EDAEVENT_TYPE type;
+	EDAEVENT_TYPE type = EDAEVENT_TYPE::NOEVENT;
+		unsigned id = 0;
 };
 
 class EDAeventHandler {

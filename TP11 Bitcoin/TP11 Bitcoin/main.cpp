@@ -13,21 +13,23 @@
 
 int main(int argc, char * argv[]) {
 
+	int i;
 	parameters_t params;
 
 	if (parseCmdLine(argc, argv, &parseCallback, &params) > 0) {
 
 		Grafo graph(params.nodes, params.miners);
-
 		allegroClass al_class(graph.nodes.size());
+		EDAeventHandler ev_handler;
+
 		al_class.drawConnection(graph.nodes);
 
 		EDAevent ev;
 		ev.type = EDAEVENT_TYPE::NOEVENT;
 
 		do {
-			ev = al_class.getInput(graph.nodes);
-			al_class.updateDisplay(graph.nodes);
+			ev_handler.pushEvent(al_class.getInput(graph.nodes)); //Meto evento a la cola
+			al_class.updateDisplay(graph.nodes); //Dibujo (HAVRIA QUE HACER QUE DIBUJE SOLO CUANDO CAMBIA ALGO)
 		} while (ev.type != EDAEVENT_TYPE::QUIT);
 
 		//createNodes();

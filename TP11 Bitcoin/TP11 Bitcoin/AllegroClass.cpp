@@ -176,6 +176,7 @@ EDAevent& allegroClass::getInput(std::vector<Nodo*>& nodos)
 	al_get_mouse_state(&mstate);
 	if (mstate.buttons & 1 && firstletgo) {
 		doubleClickTimer.stop();
+		firstletgo = false;
 		if (doubleClickTimer.getTime() < DOUBLE_CLICK_TIME) {
 			for (int i = 0; i < nodos.size(); i++) {
 				if (mstate.x > vert[2 * i] - CIRCLE_RADIUS && mstate.x < vert[2 * i] + CIRCLE_RADIUS && mstate.y > vert[(2 * i) + 1] - CIRCLE_RADIUS && mstate.y < vert[(2 * i) + 1] + CIRCLE_RADIUS) {
@@ -190,6 +191,7 @@ EDAevent& allegroClass::getInput(std::vector<Nodo*>& nodos)
 	}
 	if (!(mstate.buttons & 1) && firstclick) {
 		firstletgo = true;
+		firstclick = false;
 	}
 	if (mstate.buttons & 1) {
 		firstclick = true;

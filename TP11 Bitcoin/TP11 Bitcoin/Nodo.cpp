@@ -9,6 +9,8 @@ Nodo::Nodo(bool isMiner_)
 	else
 		this->isMiner = false;
 
+	privateKey.MakePublicKey(this->publicKey);
+
 }
 
 

@@ -1,4 +1,8 @@
 #pragma once
+#include "cryptlib.h"
+#include "eccrypto.h"
+#include "ecp.h"
+#include "sha.h"
 
 #include <vector>
 #include "UTXO.h"
@@ -9,18 +13,20 @@ public:
 	Nodo(bool isMiner_);
 	~Nodo();
 
+	/*En estos comentarios voy a poner lo que aprendi buscando como hacer esto*/
+	CryptoPP::ECDSA<CryptoPP::ECP, CryptoPP::SHA256>::PrivateKey privateKey;
+	CryptoPP::DL_PublicKey_EC<CryptoPP::ECP> publicKey;
 
-	//receiveTX(TX, PubKey);
-	//receiveBlock(Block, PubKey);
+	/*Bueno, el tp dice que un nodo tiene una pubkey y una privkey, aca las hice. Las cosas de cryptopp estan todas
+	metidas en el namespace de cryptopp. Al parecer el ECDSA, es el Elliptic Curve Digital Signature Algorithm, que segun
+	lo que entendi es el algoritmo que nos hace las keys. Es un template y tiene como primer parametro un "EC" que es una
+	Elliptic Curve, y como segundo parametro un "H" que es un algoritmo de hasheo, en nuestro caso, SHA256.
+	
+	La privateKey es como un objeto y la public key de tipo "DL_PublicKey_EC" que tiene como parametro un "EC" se genera
+	a partir de la publicKey con la funcion MakePublicKey().*/
 
-	//checkedTX(bool, Tx);
-	//checkedBlock( , );
+	/*Por ahora no linkea bien*/
 
-
-	////Si el nodo es minero
-
-	//mine(); //Minar = Probar un solo valor por nodo minero en cada loop.
-	//createBlock();
 
 
 	std::vector<UTXO> inputQueue;
@@ -51,3 +57,16 @@ private:
 
 };
 
+
+
+//receiveTX(TX, PubKey);
+//receiveBlock(Block, PubKey);
+
+//checkedTX(bool, Tx);
+//checkedBlock( , );
+
+
+////Si el nodo es minero
+
+//mine(); //Minar = Probar un solo valor por nodo minero en cada loop.
+//createBlock();

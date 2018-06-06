@@ -1,11 +1,17 @@
 #pragma once
-#include "cryptlib.h"
-#include "eccrypto.h"
-#include "ecp.h"
-#include "sha.h"
+
+#include <cryptopp\cryptlib.h>
+#include "cryptopp\osrng.h"
+#include "cryptopp\eccrypto.h"
+#include "cryptopp\oids.h"
+#include "cryptopp\hex.h"
+#include "cryptopp\sha3.h"
 
 #include <vector>
 #include "UTXO.h"
+
+#define PRIVATE_KEY_CHARS 20
+#define PUBLIC_KEY_CHARS 40
 
 class Nodo
 {
@@ -13,20 +19,46 @@ public:
 	Nodo(bool isMiner_);
 	~Nodo();
 
-	/*En estos comentarios voy a poner lo que aprendi buscando como hacer esto*/
 	CryptoPP::ECDSA<CryptoPP::ECP, CryptoPP::SHA256>::PrivateKey privateKey;
+	/*Key privada, sirve para crear una firma junto a los datos que queres firmar, para decir que esto es tuyo. La firma
+	se denomina Signature.*/
 	CryptoPP::DL_PublicKey_EC<CryptoPP::ECP> publicKey;
+	/*La key publica, en bitcoin cambia cada vez que haces una transaccion por seguridad, pero en este tp no. Se genera
+	a partir de la key privada. Con los datos a verificar, la public key y la signature se verifica si los datos corresponden
+	a la private key que se cree haberlo firmado.*/
 
-	/*Bueno, el tp dice que un nodo tiene una pubkey y una privkey, aca las hice. Las cosas de cryptopp estan todas
-	metidas en el namespace de cryptopp. Al parecer el ECDSA, es el Elliptic Curve Digital Signature Algorithm, que segun
-	lo que entendi es el algoritmo que nos hace las keys. Es un template y tiene como primer parametro un "EC" que es una
-	Elliptic Curve, y como segundo parametro un "H" que es un algoritmo de hasheo, en nuestro caso, SHA256.
-	
-	La privateKey es como un objeto y la public key de tipo "DL_PublicKey_EC" que tiene como parametro un "EC" se genera
-	a partir de la publicKey con la funcion MakePublicKey().*/
+	std::vector<byte> getSignature(CryptoPP::ECDSA<CryptoPP::ECP, CryptoPP::SHA256>::PrivateKey &privKey, std::string &data);
+	/*Con esta funcion logramos que el nodo firme datos con su key privada*/
 
-	/*Por ahora no linkea bien*/
+	/*
+	COSAS QUE EL NODO TIENE QUE HACCER CUANDO LE LLEGA UN BLOQUE
+	verificar hash correcto
+	verificar que cumpla el target
+	verificar si el previous hash es correcto
+	verificar todas las transacciones 
+	*/
 
+	bool verifySignature(CryptoPP::ECDSA<CryptoPP::ECP, CryptoPP::SHA256>::PublicKey &pubKey, std::string &data, std::vector<byte> &signature);
+	/*Esta funcion nos permite a partir de la data que queremos verificar, la firma del que lo firmo, y el public key del que lo firmo, saber
+	si la public key y la signature vienen de la misma private key que se cree que lo firmo.*/
+
+
+	//receiveTX(TX, PubKey);
+	//receiveBlock(Block, PubKey);
+
+	//checkedTX(bool, Tx);
+	//checkedBlock( , );
+
+
+	////Si el nodo es minero
+
+	//mine(); //Minar = Probar un solo valor por nodo minero en cada loop.
+	//createBlock();
+
+
+	std::vector<byte> getPrivateKey();
+	std::vector<byte> getPublicKey();
+	std::string byteVectorToString(std::vector<byte> byteVector);
 
 
 	std::vector<UTXO> inputQueue;
@@ -36,6 +68,7 @@ public:
 	std::vector<Nodo*> connectedNodes;
 
 	bool prepareOutputTransaction(value_t val, valueTypes valueType);
+	/*Prepara los UTXOs para realizar un output y los manda a la output queue*/
 
 	bool selected;
 	void setID(ID id_) { (this->id = id_); }
@@ -56,17 +89,3 @@ private:
 
 
 };
-
-
-
-//receiveTX(TX, PubKey);
-//receiveBlock(Block, PubKey);
-
-//checkedTX(bool, Tx);
-//checkedBlock( , );
-
-
-////Si el nodo es minero
-
-//mine(); //Minar = Probar un solo valor por nodo minero en cada loop.
-//createBlock();

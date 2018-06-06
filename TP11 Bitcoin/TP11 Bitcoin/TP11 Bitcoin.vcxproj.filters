@@ -40,6 +40,18 @@
     <Filter Include="Header Files\Events">
       <UniqueIdentifier>{f35bb996-285f-4c6e-9735-2433358b78ba}</UniqueIdentifier>
     </Filter>
+    <Filter Include="Header Files\Backend\Transactions">
+      <UniqueIdentifier>{951e26b6-9698-4d38-a12a-b3d6d04a2713}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Source Files\Back\Transactions">
+      <UniqueIdentifier>{56fd062f-632e-4dcd-8ecd-ee4cc2a66acc}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Source Files\Back\Misc">
+      <UniqueIdentifier>{e2b872d7-0817-41c6-b00c-7a16ab911ac0}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Header Files\Backend\Misc">
+      <UniqueIdentifier>{530fa4d6-0a54-4bf8-9afe-dcceae677689}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="main.cpp">
@@ -57,14 +69,29 @@
     <ClCompile Include="Nodo.cpp">
       <Filter>Source Files\Back\Grafos + Nodos</Filter>
     </ClCompile>
-    <ClCompile Include="UTXO.cpp">
-      <Filter>Source Files\Back\Grafos + Nodos</Filter>
-    </ClCompile>
     <ClCompile Include="Grafo.cpp">
       <Filter>Source Files\Back\Grafos + Nodos</Filter>
     </ClCompile>
+    <ClCompile Include="UTXO.cpp">
+      <Filter>Source Files\Back\Transactions</Filter>
+    </ClCompile>
+    <ClCompile Include="Block.cpp">
+      <Filter>Source Files\Back\Transactions</Filter>
+    </ClCompile>
+    <ClCompile Include="Blockchain.cpp">
+      <Filter>Source Files\Back\Transactions</Filter>
+    </ClCompile>
+    <ClCompile Include="Input.cpp">
+      <Filter>Source Files\Back\Transactions</Filter>
+    </ClCompile>
+    <ClCompile Include="Output.cpp">
+      <Filter>Source Files\Back\Transactions</Filter>
+    </ClCompile>
     <ClCompile Include="Timer.cpp">
-      <Filter>Source Files</Filter>
+      <Filter>Source Files\Back\Misc</Filter>
+    </ClCompile>
+    <ClCompile Include="Transaction.cpp">
+      <Filter>Source Files\Back\Transactions</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
@@ -83,17 +110,32 @@
     <ClInclude Include="Nodo.h">
       <Filter>Header Files\Backend\Grafos + Nodos</Filter>
     </ClInclude>
-    <ClInclude Include="UTXO.h">
-      <Filter>Header Files\Backend\Grafos + Nodos</Filter>
-    </ClInclude>
     <ClInclude Include="parameters.h">
       <Filter>Header Files\Backend\Parser</Filter>
     </ClInclude>
     <ClInclude Include="EDAevent.h">
       <Filter>Header Files\Events</Filter>
     </ClInclude>
+    <ClInclude Include="UTXO.h">
+      <Filter>Header Files\Backend\Transactions</Filter>
+    </ClInclude>
+    <ClInclude Include="Output.h">
+      <Filter>Header Files\Backend\Transactions</Filter>
+    </ClInclude>
+    <ClInclude Include="Blockchain.h">
+      <Filter>Header Files\Backend\Transactions</Filter>
+    </ClInclude>
+    <ClInclude Include="Block.h">
+      <Filter>Header Files\Backend\Transactions</Filter>
+    </ClInclude>
+    <ClInclude Include="Input.h">
+      <Filter>Header Files\Backend\Transactions</Filter>
+    </ClInclude>
     <ClInclude Include="Timer.h">
-      <Filter>Header Files</Filter>
+      <Filter>Header Files\Backend\Misc</Filter>
+    </ClInclude>
+    <ClInclude Include="Transaction.h">
+      <Filter>Header Files\Backend\Transactions</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>

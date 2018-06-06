@@ -9,7 +9,13 @@ Nodo::Nodo(bool isMiner_)
 	else
 		this->isMiner = false;
 
-	privateKey.MakePublicKey(this->publicKey);
+	CryptoPP::AutoSeededRandomPool ASRP;
+	privateKey.Initialize(ASRP, CryptoPP::ASN1::secp160r1());
+	bool result = privateKey.Validate(ASRP, 3);
+	if (!result)
+		std::cout << "private key from node " << this->id << " is not valid!" << std::endl;
+	else
+		privateKey.MakePublicKey(this->publicKey);
 
 }
 
@@ -17,6 +23,53 @@ Nodo::Nodo(bool isMiner_)
 Nodo::~Nodo()
 {
 
+}
+
+std::vector<byte> Nodo::getSignature(CryptoPP::ECDSA<CryptoPP::ECP, CryptoPP::SHA256>::PrivateKey &privKey, std::string &data)
+{
+	CryptoPP::AutoSeededRandomPool ASRP;
+	CryptoPP::ECDSA<CryptoPP::ECP, CryptoPP::SHA256>::Signer Signer(privKey);
+	bool result = Signer.AccessKey().Validate(ASRP, 3);
+	if (!result)
+		std::cout << "failed to create signer node id " << this->id << std::endl;
+	size_t signatureLength = Signer.MaxSignatureLength();
+	std::vector<byte> signature(signatureLength, 0x00);
+	signatureLength = Signer.SignMessage(ASRP, (const byte*)data.data(), data.size(), (byte*)signature.data());
+	return signature;
+}
+
+bool Nodo::verifySignature(CryptoPP::ECDSA<CryptoPP::ECP, CryptoPP::SHA256>::PublicKey & pubKey, std::string & data, std::vector<byte>& signature)
+{
+	CryptoPP::ECDSA<CryptoPP::ECP, CryptoPP::SHA256>::Verifier verifier(pubKey);
+	return  verifier.VerifyMessage((const byte*)data.data(), data.size(), (const byte*)signature.data(), signature.size());
+}
+
+std::vector<byte> Nodo::getPrivateKey()
+{
+	std::vector<byte> privKeyByteArray(PRIVATE_KEY_CHARS);
+	const CryptoPP::Integer &privateKeyInteger = this->privateKey.GetPrivateExponent(); //La key posta
+	privateKeyInteger.Encode(privKeyByteArray.data(), privateKeyInteger.ByteCount());
+	return privKeyByteArray;
+}
+
+std::vector<byte> Nodo::getPublicKey()
+{
+	std::vector<byte> pubKeyByteArray(PUBLIC_KEY_CHARS);
+	std::vector<byte> aux(PUBLIC_KEY_CHARS / 2);
+	const CryptoPP::ECP::Point &point = this->publicKey.GetPublicElement();
+	point.x.Encode(aux.data(), point.x.ByteCount());
+	pubKeyByteArray.clear();
+	pubKeyByteArray.insert(pubKeyByteArray.end(), aux.begin(), aux.end());
+	point.y.Encode(aux.data(), point.y.ByteCount());
+	pubKeyByteArray.insert(pubKeyByteArray.end(), aux.begin(), aux.end());
+	return pubKeyByteArray;
+}
+
+std::string Nodo::byteVectorToString(std::vector<byte> byteVector) {
+	std::string returnString;
+	for (byte by : byteVector)
+		returnString += by;
+	return returnString;
 }
 
 bool Nodo::prepareOutputTransaction(value_t val, valueTypes valueType)

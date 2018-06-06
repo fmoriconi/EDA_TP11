@@ -9,11 +9,8 @@
 #include "parameters.h"
 #include "Grafo.h"
 
-//#include "cryptopp"
-
 int main(int argc, char * argv[]) {
 
-	int i;
 	parameters_t params;
 
 	if (parseCmdLine(argc, argv, &parseCallback, &params) > 0) {
@@ -28,8 +25,10 @@ int main(int argc, char * argv[]) {
 		ev.type = EDAEVENT_TYPE::NOEVENT;
 
 		do {
-			ev_handler.pushEvent(al_class.getInput(graph.nodes)); //Meto evento a la cola
-			al_class.updateDisplay(graph.nodes); //Dibujo (HAVRIA QUE HACER QUE DIBUJE SOLO CUANDO CAMBIA ALGO)
+			ev = al_class.getInput(graph.nodes);
+			if(ev.type != EDAEVENT_TYPE::NOEVENT)
+				ev_handler.pushEvent(ev); //Meto evento a la cola
+			al_class.updateDisplay(graph.nodes);
 		} while (ev.type != EDAEVENT_TYPE::QUIT);
 
 		//createNodes();

@@ -71,17 +71,16 @@ void allegroClass::infoWindow(Nodo* nodito) {
 	al_draw_text(smallfont, AL_BLACK, INFO_WINDOW_TITLE_X, INFO_WINDOW_TITLE_Y, ALLEGRO_ALIGN_CENTER, auxstring.c_str());
 	auxstring = "Balance: " + std::to_string(nodito->getBalance());
 	al_draw_text(smallfont, AL_BLACK, INFO_WINDOW_TEXT_X, INFO_WINDOW_TEXT_Y1, ALLEGRO_ALIGN_LEFT, auxstring.c_str());
-	if (nodito->getIsMiner()) {
+	if (nodito->getIsMiner())
 		auxstring = "Miner";
-	}
-	else {
+	else
 		auxstring = "Full service";
-	}
 	al_draw_text(smallfont, AL_BLACK, INFO_WINDOW_TEXT_X, INFO_WINDOW_TEXT_Y2, ALLEGRO_ALIGN_LEFT, auxstring.c_str());
-	auxstring = ""; //provisorio
-	al_draw_text(smallfont, AL_BLACK, INFO_WINDOW_TEXT_X, INFO_WINDOW_TEXT_Y3, ALLEGRO_ALIGN_CENTER, auxstring.c_str());
-	al_draw_text(smallfont, AL_BLACK, INFO_WINDOW_TEXT_X, INFO_WINDOW_TEXT_Y4, ALLEGRO_ALIGN_CENTER, auxstring.c_str());
-	al_draw_text(smallfont, AL_BLACK, INFO_WINDOW_TEXT_X, INFO_WINDOW_TEXT_Y5, ALLEGRO_ALIGN_CENTER, auxstring.c_str());
+	auxstring = "Private key: " + nodito->byteVectorToString(nodito->getPrivateKey());
+	al_draw_text(smallfont, AL_BLACK, INFO_WINDOW_TEXT_X, INFO_WINDOW_TEXT_Y3, ALLEGRO_ALIGN_LEFT, auxstring.c_str());
+	auxstring = "Public key: " + nodito->byteVectorToString(nodito->getPublicKey());
+	al_draw_text(smallfont, AL_BLACK, INFO_WINDOW_TEXT_X, INFO_WINDOW_TEXT_Y4, ALLEGRO_ALIGN_LEFT, auxstring.c_str());
+	//al_draw_text(smallfont, AL_BLACK, INFO_WINDOW_TEXT_X, INFO_WINDOW_TEXT_Y5, ALLEGRO_ALIGN_LEFT, auxstring.c_str());
 }
 
 allegroClass::~allegroClass()

@@ -77,8 +77,8 @@
     <Allegro_AddonAcodec>true</Allegro_AddonAcodec>
     <Allegro_AddonFont>true</Allegro_AddonFont>
     <Allegro_AddonColor>true</Allegro_AddonColor>
-    <IncludePath>C:\Users\Acer\Desktop\GitHub\EDA_TP11\TP11 Bitcoin\TP11 Bitcoin\cryptopp700;$(IncludePath)</IncludePath>
-    <LibraryPath>C:\Users\Acer\Desktop\GitHub\EDA_TP11\TP11 Bitcoin\TP11 Bitcoin\cryptopp700;$(LibraryPath)</LibraryPath>
+    <IncludePath>$(IncludePath)</IncludePath>
+    <LibraryPath>$(LibraryPath)</LibraryPath>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
     <Allegro_AddonImage>true</Allegro_AddonImage>
@@ -99,11 +99,11 @@
       <ConformanceMode>true</ConformanceMode>
       <DisableSpecificWarnings>4996</DisableSpecificWarnings>
       <PreprocessorDefinitions>_CRT_SECURE_NO_WARNINGS;%(PreprocessorDefinitions)</PreprocessorDefinitions>
-      <AdditionalIncludeDirectories>C:\Users\Acer\Desktop\GitHub\EDA_TP11\TP11 Bitcoin\TP11 Bitcoin\cryptopp700;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
     </ClCompile>
     <Link>
-      <AdditionalLibraryDirectories>C:\Users\Acer\Desktop\GitHub\EDA_TP11\TP11 Bitcoin\TP11 Bitcoin\cryptopp700;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
-      <AdditionalDependencies>.\cryptopp700\cryptlib.lib;%(AdditionalDependencies)</AdditionalDependencies>
+      <AdditionalLibraryDirectories>%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
+      <AdditionalDependencies>%(AdditionalDependencies)</AdditionalDependencies>
     </Link>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
@@ -149,23 +149,33 @@
   </ItemDefinitionGroup>
   <ItemGroup>
     <ClCompile Include="AllegroClass.cpp" />
+    <ClCompile Include="Block.cpp" />
+    <ClCompile Include="Blockchain.cpp" />
     <ClCompile Include="Grafo.cpp" />
+    <ClCompile Include="Input.cpp" />
     <ClCompile Include="main.cpp" />
     <ClCompile Include="Nodo.cpp" />
+    <ClCompile Include="Output.cpp" />
     <ClCompile Include="parseCmdLine.cpp" />
     <ClCompile Include="parser.cpp" />
     <ClCompile Include="Timer.cpp" />
+    <ClCompile Include="Transaction.cpp" />
     <ClCompile Include="UTXO.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="AllegroClass.h" />
+    <ClInclude Include="Block.h" />
+    <ClInclude Include="Blockchain.h" />
     <ClInclude Include="EDAevent.h" />
     <ClInclude Include="Grafo.h" />
+    <ClInclude Include="Input.h" />
     <ClInclude Include="Nodo.h" />
+    <ClInclude Include="Output.h" />
     <ClInclude Include="parameters.h" />
     <ClInclude Include="parseCmdLine.h" />
     <ClInclude Include="parser.h" />
     <ClInclude Include="Timer.h" />
+    <ClInclude Include="Transaction.h" />
     <ClInclude Include="UTXO.h" />
   </ItemGroup>
   <ItemGroup>
@@ -175,6 +185,11 @@
   <ImportGroup Label="ExtensionTargets">
     <Import Project="..\packages\AllegroDeps.1.7.0.0\build\native\AllegroDeps.targets" Condition="Exists('..\packages\AllegroDeps.1.7.0.0\build\native\AllegroDeps.targets')" />
     <Import Project="..\packages\Allegro.5.2.4.0\build\native\Allegro.targets" Condition="Exists('..\packages\Allegro.5.2.4.0\build\native\Allegro.targets')" />
+    <Import Project="..\packages\cryptopp.v140.windesktop.dyn.rt-static.5.6.5.4\build\native\cryptopp.v140.windesktop.dyn.rt-static.targets" Condition="Exists('..\packages\cryptopp.v140.windesktop.dyn.rt-static.5.6.5.4\build\native\cryptopp.v140.windesktop.dyn.rt-static.targets')" />
+    <Import Project="..\packages\cryptopp.android.5.6.5.2\build\native\cryptopp.android.targets" Condition="Exists('..\packages\cryptopp.android.5.6.5.2\build\native\cryptopp.android.targets')" />
+    <Import Project="..\packages\cryptopp.v120.5.6.5.2\build\native\cryptopp.v120.targets" Condition="Exists('..\packages\cryptopp.v120.5.6.5.2\build\native\cryptopp.v120.targets')" />
+    <Import Project="..\packages\cryptopp.v140.5.6.5.2\build\native\cryptopp.v140.targets" Condition="Exists('..\packages\cryptopp.v140.5.6.5.2\build\native\cryptopp.v140.targets')" />
+    <Import Project="..\packages\cryptopp.5.6.5.4\build\native\cryptopp.targets" Condition="Exists('..\packages\cryptopp.5.6.5.4\build\native\cryptopp.targets')" />
   </ImportGroup>
   <Target Name="EnsureNuGetPackageBuildImports" BeforeTargets="PrepareForBuild">
     <PropertyGroup>
@@ -182,5 +197,10 @@
     </PropertyGroup>
     <Error Condition="!Exists('..\packages\AllegroDeps.1.7.0.0\build\native\AllegroDeps.targets')" Text="$([System.String]::Format('$(ErrorText)', '..\packages\AllegroDeps.1.7.0.0\build\native\AllegroDeps.targets'))" />
     <Error Condition="!Exists('..\packages\Allegro.5.2.4.0\build\native\Allegro.targets')" Text="$([System.String]::Format('$(ErrorText)', '..\packages\Allegro.5.2.4.0\build\native\Allegro.targets'))" />
+    <Error Condition="!Exists('..\packages\cryptopp.v140.windesktop.dyn.rt-static.5.6.5.4\build\native\cryptopp.v140.windesktop.dyn.rt-static.targets')" Text="$([System.String]::Format('$(ErrorText)', '..\packages\cryptopp.v140.windesktop.dyn.rt-static.5.6.5.4\build\native\cryptopp.v140.windesktop.dyn.rt-static.targets'))" />
+    <Error Condition="!Exists('..\packages\cryptopp.android.5.6.5.2\build\native\cryptopp.android.targets')" Text="$([System.String]::Format('$(ErrorText)', '..\packages\cryptopp.android.5.6.5.2\build\native\cryptopp.android.targets'))" />
+    <Error Condition="!Exists('..\packages\cryptopp.v120.5.6.5.2\build\native\cryptopp.v120.targets')" Text="$([System.String]::Format('$(ErrorText)', '..\packages\cryptopp.v120.5.6.5.2\build\native\cryptopp.v120.targets'))" />
+    <Error Condition="!Exists('..\packages\cryptopp.v140.5.6.5.2\build\native\cryptopp.v140.targets')" Text="$([System.String]::Format('$(ErrorText)', '..\packages\cryptopp.v140.5.6.5.2\build\native\cryptopp.v140.targets'))" />
+    <Error Condition="!Exists('..\packages\cryptopp.5.6.5.4\build\native\cryptopp.targets')" Text="$([System.String]::Format('$(ErrorText)', '..\packages\cryptopp.5.6.5.4\build\native\cryptopp.targets'))" />
   </Target>
 </Project>

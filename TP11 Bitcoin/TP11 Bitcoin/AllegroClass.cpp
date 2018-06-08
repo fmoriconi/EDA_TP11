@@ -18,6 +18,7 @@ allegroClass::allegroClass(unsigned quantity_) : quantity(quantity_)
 										if ((display = al_create_display(SCREEN_W, SCREEN_H))) {
 											this->smallfont = al_load_font("font.ttf", -SMALLFONT_SIZE, NULL);
 											this->bigfont = al_load_font("font.ttf", -BIGFONT_SIZE, NULL);
+											this->verysmallfont = al_load_font("font.ttf", -VERYSMALLFONT_SIZE, NULL);
 											//al_register_event_source(this->ev_queue, al_get_mouse_event_source());
 											al_register_event_source(this->ev_queue, al_get_display_event_source(this->display));
 											al_set_window_title(display, "EDAcoin Mining Facility.encd");
@@ -76,9 +77,9 @@ void allegroClass::infoWindow(Nodo* nodito) {
 	else
 		auxstring = "Full service";
 	al_draw_text(smallfont, AL_BLACK, INFO_WINDOW_TEXT_X, INFO_WINDOW_TEXT_Y2, ALLEGRO_ALIGN_LEFT, auxstring.c_str());
-	auxstring = "Private key: " + nodito->byteVectorToString(nodito->getPrivateKey());
+	auxstring = "Private key: " + nodito->stringToHex(nodito->byteVectorToString(nodito->getPrivateKey()));
 	al_draw_text(smallfont, AL_BLACK, INFO_WINDOW_TEXT_X, INFO_WINDOW_TEXT_Y3, ALLEGRO_ALIGN_LEFT, auxstring.c_str());
-	auxstring = "Public key: " + nodito->byteVectorToString(nodito->getPublicKey());
+	auxstring = "Public key: " + nodito->stringToHex(nodito->byteVectorToString(nodito->getPublicKey()));
 	al_draw_text(smallfont, AL_BLACK, INFO_WINDOW_TEXT_X, INFO_WINDOW_TEXT_Y4, ALLEGRO_ALIGN_LEFT, auxstring.c_str());
 	//al_draw_text(smallfont, AL_BLACK, INFO_WINDOW_TEXT_X, INFO_WINDOW_TEXT_Y5, ALLEGRO_ALIGN_LEFT, auxstring.c_str());
 }

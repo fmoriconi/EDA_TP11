@@ -44,6 +44,102 @@ bool Nodo::verifySignature(CryptoPP::ECDSA<CryptoPP::ECP, CryptoPP::SHA256>::Pub
 	return  verifier.VerifyMessage((const byte*)data.data(), data.size(), (const byte*)signature.data(), signature.size());
 }
 
+bool Nodo::verifyTransaction(Transaction & TX)
+{
+	//Que inputs y outputs no esten vacios
+	if (TX.inputVector.empty())
+		return false;
+	if (TX.outputVector.empty())
+		return false;
+	//Que ningun input tenga hash 0
+	for (Input& input : TX.inputVector) {
+		if (std::stoi(input.hashID) == 0)
+			return false;
+	}
+	//Que la transaccion no este presente ya en algun bloque de la blockchain
+	for (Block& block : blockchain.blockchain) {
+		for (Transaction& TX2 : block.transactions) {
+			if (TX.hashID == TX2.hashID)
+				return false;
+		}
+	}
+	//Que la cantidad de EDAcoins en inputs sea la misma que en outputs
+	unsigned outputTotal = 0;
+	unsigned inputTotal = 0;
+	for (Output& output : TX.outputVector) { //Sumo amounts de outputs
+		outputTotal += output.amount;
+	}
+	for (Input& input : TX.inputVector) { //Busco para cada input de la TX a verificar
+		for (Block& block : blockchain.blockchain) { //Si dentro de cada bloque de la blockchain
+			for (Transaction& TX : block.transactions) { //Dentro de cada TX de cada bloque
+				if (TX.hashID == input.hashID) { //Hay alguna transaccion con el mismo hash que el que referencia el input
+					inputTotal += TX.outputVector[input.index].amount; //Y si la hay, es porque se encontro el output al que referencia la input y sumo amount
+				}
+			}
+		}
+	}
+	if (outputTotal != inputTotal)
+		return false;
+
+	/* ACA FALTA VER SI LA TRANSACCION ES MIA PARA AGREGARLA A MIS UTXO
+	Y FALTA VER QUIEN ME LA MANDO Y PASARSELAS A QUIEN NO ME LA MANDO*/
+
+	return true;
+}
+
+bool Nodo::receiveBlock(Block block)
+{
+	std::string data;
+
+	for (int i = 0; i < TARGET_DIFFICULTY; i++) { //Verifico si el previous hash es correcto
+		if (block.previousHashID[i] != 0)
+			return false;
+	}
+
+	for (Transaction& TX : block.transactions) { //Hago el hash del bloque
+		data += TX.hashTransaction();
+	}
+	data += block.blockID;
+	data += block.nonce;
+	data += block.previousHashID;
+	data += block.timestamp;
+	data += block.transactionQuantity;
+	std::string blockHash = hashSome(data);
+	for (int i = 0; i < TARGET_DIFFICULTY; i++) { //Verifico si el hash es correcto
+		if (blockHash[i] != 0)
+			return false;
+	}
+	for (Transaction& TX : block.transactions) {
+		if (!(verifyTransaction(TX)))
+			return false;
+	}
+	//Borro cualquier transaccion se halle en el pool que ya esten en el bloque confirmado
+	unsigned index;
+	for (Transaction& TX : transactionQueue) {
+		for (Transaction& TX2 : block.transactions) {
+			if (TX.hashID == TX2.hashID) {
+				std::vector<Transaction>::iterator currTX = transactionQueue.begin() + index;
+				transactionQueue.erase(currTX);
+			}
+		}
+		index++;
+	}
+
+	blockchain.blockchain.push_back(block);
+
+	/* ACA FALTA VER QUIEN ME LA MANDO Y PASARSELA A TODOS LOS DEMAS NODOS QUE TENGO CONECTADOS QUE NO ME LO MANDARON*/
+
+	return true;
+}
+
+std::string Nodo::hashSome(std::string data)
+{
+	CryptoPP::SHA256 hash;
+	std::string digest;
+	CryptoPP::StringSource s(data, true, new CryptoPP::HashFilter(hash, new CryptoPP::HexEncoder(new CryptoPP::StringSink(digest))));
+	return digest;
+}
+
 std::vector<byte> Nodo::getPrivateKey()
 {
 	std::vector<byte> privKeyByteArray(PRIVATE_KEY_CHARS);
@@ -152,4 +248,20 @@ bool Nodo::sumLowerValues(value_t val, valueTypes valueType)
 
 	}
 	return true;
+}
+
+std::string Nodo::stringToHex(std::string string)
+{
+	static const char* const lut = "0123456789ABCDEF";
+	size_t len = string.length();
+
+	std::string output;
+	output.reserve(2 * len);
+	for (size_t i = 0; i < len; ++i)
+	{
+		const unsigned char c = string[i];
+		output.push_back(lut[c >> 4]);
+		output.push_back(lut[c & 15]);
+	}
+	return output;
 }

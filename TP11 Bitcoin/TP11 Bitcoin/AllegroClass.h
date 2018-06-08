@@ -24,6 +24,7 @@
 #define INFO_GRAPH_LIMIT_X (350)
 #define BIGFONT_SIZE (35)
 #define SMALLFONT_SIZE (18)
+#define VERYSMALLFONT_SIZE (8)
 #define TITLE_POS_X (INFO_GRAPH_LIMIT_X/2)
 #define TITLE_POS_Y (30)
 #define AL_ORANGE (al_map_rgb(255, 128, 0))
@@ -76,6 +77,7 @@ class allegroClass
 		ALLEGRO_TIMER * timer = NULL;
 		ALLEGRO_FONT* smallfont = NULL;
 		ALLEGRO_FONT* bigfont = NULL;
+		ALLEGRO_FONT* verysmallfont = NULL;
 		ALLEGRO_BITMAP* pick = NULL;
 		std::vector<ALLEGRO_BITMAP*> bitmaps;
 		std::vector<int> vert;

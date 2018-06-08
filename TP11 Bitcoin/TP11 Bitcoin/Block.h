@@ -12,8 +12,9 @@ public:
 	Block();
 	~Block();
 
-private:
 	std::vector<Transaction> transactions;
+	long unsigned transactionQuantity = 0;
+	long unsigned blockID;
 	std::string previousHashID;
 	std::string nonce;
 	std::string timestamp;

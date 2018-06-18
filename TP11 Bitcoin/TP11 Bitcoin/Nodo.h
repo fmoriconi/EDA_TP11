@@ -52,6 +52,7 @@ public:
 	void receiveTransaction(Transaction TX, CryptoPP::ECDSA<CryptoPP::ECP, CryptoPP::SHA256>::PublicKey &pubKey);
 	bool verifyTransaction(Transaction& TX);
 	bool receiveBlock(Block block);
+	void sendBlock(Block block);
 	/*
 	COSAS QUE EL NODO TIENE QUE HACCER CUANDO LE LLEGA UN BLOQUE
 	verificar hash correcto

@@ -44,7 +44,12 @@ bool Nodo::verifySignature(CryptoPP::ECDSA<CryptoPP::ECP, CryptoPP::SHA256>::Pub
 	return  verifier.VerifyMessage((const byte*)data.data(), data.size(), (const byte*)signature.data(), signature.size());
 }
 
-bool Nodo::verifyTransaction(Transaction & TX)
+void Nodo::receiveTransaction(Transaction& TX, CryptoPP::ECDSA<CryptoPP::ECP, CryptoPP::SHA256>::PublicKey & pubKey)
+{ 
+
+}
+
+bool Nodo::verifyTransaction(Transaction & TX, CryptoPP::ECDSA<CryptoPP::ECP, CryptoPP::SHA256>::PublicKey & pubKey)
 {
 	//Que inputs y outputs no esten vacios
 	if (TX.inputVector.empty())
@@ -82,54 +87,76 @@ bool Nodo::verifyTransaction(Transaction & TX)
 		return false;
 
 	/* ACA FALTA VER SI LA TRANSACCION ES MIA PARA AGREGARLA A MIS UTXO
-	Y FALTA VER QUIEN ME LA MANDO Y PASARSELAS A QUIEN NO ME LA MANDO*/
+	Y FALTA VER QUIEN ME LA MANDO Y PASARSELAS A QUIEN NO ME LA MANDO
+	ADEMAS, FALTA VERIFICAR JUNTO A LA PUBKEY Y LA SIGNATURE, SI LA FIRMA VERIFICA.*/
 
 	return true;
 }
 
 bool Nodo::receiveBlock(Block block)
 {
+	bool iDontHave = true;
 	std::string data;
 
-	for (int i = 0; i < TARGET_DIFFICULTY; i++) { //Verifico si el previous hash es correcto
-		if (block.previousHashID[i] != 0)
-			return false;
+	for (int i = 0; i < blockchain.blockchain.size(); i++) {
+		if (blockchain.blockchain[i].blockID == block.blockID)
+			iDontHave = false;
 	}
 
-	for (Transaction& TX : block.transactions) { //Hago el hash del bloque
-		data += TX.hashTransaction();
-	}
-	data += block.blockID;
-	data += block.nonce;
-	data += block.previousHashID;
-	data += block.timestamp;
-	data += block.transactionQuantity;
-	std::string blockHash = hashSome(data);
-	for (int i = 0; i < TARGET_DIFFICULTY; i++) { //Verifico si el hash es correcto
-		if (blockHash[i] != 0)
-			return false;
-	}
-	for (Transaction& TX : block.transactions) {
-		if (!(verifyTransaction(TX)))
-			return false;
-	}
-	//Borro cualquier transaccion se halle en el pool que ya esten en el bloque confirmado
-	unsigned index;
-	for (Transaction& TX : transactionQueue) {
-		for (Transaction& TX2 : block.transactions) {
-			if (TX.hashID == TX2.hashID) {
-				std::vector<Transaction>::iterator currTX = transactionQueue.begin() + index;
-				transactionQueue.erase(currTX);
-			}
+	if (iDontHave) {
+
+		for (int i = 0; i < TARGET_DIFFICULTY; i++) { //Verifico si el previous hash es correcto
+			if (block.previousHashID[i] != 0)
+				return false;
 		}
-		index++;
+
+		for (Transaction& TX : block.transactions) { //Hago el hash del bloque
+			data += TX.hashTransaction();
+		}
+		data += block.blockID;
+		data += block.nonce;
+		data += block.previousHashID;
+		data += block.timestamp;
+		data += block.transactionQuantity;
+		std::string blockHash = hashSome(data);
+		for (int i = 0; i < TARGET_DIFFICULTY; i++) { //Verifico si el hash es correcto
+			if (blockHash[i] != 0)
+				return false;
+		}
+		for (Transaction& TX : block.transactions) {
+			if (!(verifyTransaction(TX)))
+				return false;
+		}
+		//Borro cualquier transaccion se halle en el pool que ya esten en el bloque confirmado
+		unsigned index;
+		for (Transaction& TX : transactionQueue) {
+			for (Transaction& TX2 : block.transactions) {
+				if (TX.hashID == TX2.hashID) {
+					std::vector<Transaction>::iterator currTX = transactionQueue.begin() + index;
+					transactionQueue.erase(currTX);
+				}
+			}
+			index++;
+		}
+
+		blockchain.blockchain.push_back(block);
+
+		sendBlock(block);
+
+		return true;
 	}
 
-	blockchain.blockchain.push_back(block);
+	else
+		return false;
+}
 
-	/* ACA FALTA VER QUIEN ME LA MANDO Y PASARSELA A TODOS LOS DEMAS NODOS QUE TENGO CONECTADOS QUE NO ME LO MANDARON*/
-
-	return true;
+void Nodo::sendBlock(Block block)
+{
+	for (Nodo* nodo : connectedNodes) {
+		if (nodo != nullptr) {
+			nodo->receiveBlock(block); //this doesnt sound right
+		}
+	}
 }
 
 std::string Nodo::hashSome(std::string data)

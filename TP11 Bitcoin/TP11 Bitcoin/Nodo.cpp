@@ -49,7 +49,7 @@ void Nodo::receiveTransaction(Transaction& TX, CryptoPP::ECDSA<CryptoPP::ECP, Cr
 
 }
 
-bool Nodo::verifyTransaction(Transaction & TX, CryptoPP::ECDSA<CryptoPP::ECP, CryptoPP::SHA256>::PublicKey & pubKey)
+bool Nodo::verifyTransaction(Transaction & TX)
 {
 	//Que inputs y outputs no esten vacios
 	if (TX.inputVector.empty())

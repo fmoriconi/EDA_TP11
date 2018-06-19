@@ -49,8 +49,8 @@ public:
 	/*Esta funcion nos permite a partir de la data que queremos verificar, la firma del que lo firmo, y el public key del que lo firmo, saber
 	si la public key y la signature vienen de la misma private key que se cree que lo firmo.*/
 
-	void receiveTransaction(Transaction TX, CryptoPP::ECDSA<CryptoPP::ECP, CryptoPP::SHA256>::PublicKey &pubKey);
-	bool verifyTransaction(Transaction& TX);
+	void receiveTransaction(Transaction & TX, CryptoPP::ECDSA<CryptoPP::ECP, CryptoPP::SHA256>::PublicKey &pubKey);
+	bool verifyTransaction(Transaction & TX);
 	bool receiveBlock(Block block);
 	void sendBlock(Block block);
 	/*

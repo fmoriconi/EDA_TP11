@@ -50,8 +50,8 @@ public:
 	/*Esta funcion nos permite a partir de la data que queremos verificar, la firma del que lo firmo, y el public key del que lo firmo, saber
 	si la public key y la signature vienen de la misma private key que se cree que lo firmo.*/
 
-	void receiveTransaction(Transaction & TX); //Recive una transaccion, la verifica.
-	bool verifyTransaction(Transaction & TX); //Verifica una transaccion.
+	void receiveTransaction(Transaction TX); //Recive una transaccion, la verifica.
+	bool verifyTransaction(Transaction TX); //Verifica una transaccion.
 	bool receiveBlock(Block block); //Recive bloque nuevo, lo verifica.
 	Block createBlock(uint32_t nonce, std::string timestamp); //Crea un bloque nuevo.
 	void sendBlock(Block block); //Propaga un bloque a sus conectados.
@@ -82,7 +82,7 @@ private:
 
 	value_t EDAcoinsBalance; //El total de EDACoins que tiene el nodo.
 	void updateBalance(); //Updatea el balance de bitcoins.
-
+	bool initialTX = true;
 	int findClosestBiggerValue(value_t val, valueTypes valueType);
 	std::vector<UTXO> sumLowerValues(value_t val, valueTypes valueType);
 	std::string time_point_to_string(std::chrono::system_clock::time_point &tp);

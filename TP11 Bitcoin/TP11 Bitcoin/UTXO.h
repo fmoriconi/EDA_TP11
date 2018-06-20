@@ -18,6 +18,8 @@ public:
 	std::string getHashID() { return hashID; }
 	long unsigned getIndex() { return index; }
 
+	bool godSent;
+
 private:
 	value_t amount; //Valor en EDACoins, es privada pues no puede modificarse tras ser creada.
 	std::string hashID;

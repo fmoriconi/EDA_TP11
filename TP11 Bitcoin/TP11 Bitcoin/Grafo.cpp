@@ -23,6 +23,7 @@ Grafo::Grafo(unsigned int nodeQty,unsigned int minerQty )
 
 	enumNodes();
 	UTXO firstUTXO(50, "", 0);
+	firstUTXO.godSent = true;
 	nodes[0]->UTXOs.push_back(firstUTXO);
 	createConnections();
 	ensureGrafoConexo();

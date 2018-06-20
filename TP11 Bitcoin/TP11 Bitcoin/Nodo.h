@@ -61,13 +61,14 @@ public:
 	std::string hashSome(std::string data);
 	std::vector<byte> getPrivateKey();
 	std::vector<byte> getPublicKey();
-	CryptoPP::DL_PublicKey_EC<CryptoPP::ECP> getPublicKeyRaw() { this->publicKey; }
+	CryptoPP::DL_PublicKey_EC<CryptoPP::ECP> getPublicKeyRaw() { return this->publicKey; }
 	std::string byteVectorToString(std::vector<byte> byteVector);
 	std::string stringToHex(std::string string);
 	std::vector<UTXO> findUTXOs(value_t val, valueTypes valueType);
 	/*Prepara los UTXOs para realizar un output y los manda a la output queue*/
 
 	bool selected;
+	unsigned amountOfNodes = 0;
 	void setID(ID id_) { (this->id = id_); }
 	ID getID() { return this->id; }
 	value_t getBalance() { return this->EDAcoinsBalance; }
@@ -85,10 +86,4 @@ private:
 	std::vector<UTXO> sumLowerValues(value_t val, valueTypes valueType);
 	ID id;
 	Nodo * searchForNode(ID id, std::vector<bool>& visited);
-	static unsigned int amountOfNodes;
-
-
 };
-
-
-unsigned int Nodo::amountOfNodes = 0;

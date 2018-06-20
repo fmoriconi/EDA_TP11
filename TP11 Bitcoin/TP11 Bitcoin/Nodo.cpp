@@ -100,7 +100,7 @@ bool Nodo::verifyTransaction(Transaction & TX)
 	unsigned index = 0;
 	for (Output& output : TX.outputVector) {
 		if (output.publicKey == this->publicKey) { //Es mia
-			UTXO myNewUTXO(output.amount, TX.hashTransaction(), index, 0);
+			UTXO myNewUTXO(output.amount, TX.hashTransaction(), index);
 			this->UTXOs.push_back(myNewUTXO);
 		}
 		index++;
@@ -177,22 +177,39 @@ void Nodo::sendBlock(Block block)
 
 void Nodo::createTransaction(value_t amount, unsigned nodeID)
 {
-
 	std::vector<bool> visited;
 	for (int i = 0; i < amountOfNodes; i++);
 		visited.push_back(false);
 
 	Nodo * nodePtr = searchForNode(nodeID, visited); //Encuentro a quien se lo quiero mandar
-	CryptoPP::DL_PublicKey_EC<CryptoPP::ECP> pubKeyRecipient = nodePtr->getPublicKeyRaw(); //Encuentro la pubKey del recipient
-	std::vector<UTXO> chosenUTXOs = findUTXOs(amount, valueTypes::EDACoins); //Encuentro los UTXOs necesarios para completar amount del sender.
-	this->transactionStack.clean(); //Limpio lugar donde creo transaction nueva
-	for (UTXO& utxo : chosenUTXOs) {
-		std::string data = utxo.getHashID + std::to_string(utxo.getIndex);
-		Input input(utxo.getHashID(), utxo.getIndex(), this->getSignature(this->privateKey, data));
+
+	if (nodePtr) {
+		CryptoPP::DL_PublicKey_EC<CryptoPP::ECP> pubKeyRecipient = nodePtr->getPublicKeyRaw(); //Encuentro la pubKey del recipient
+
+		std::vector<UTXO> chosenUTXOs = findUTXOs(amount, valueTypes::EDACoins); //Encuentro los UTXOs necesarios para completar amount del sender.
+
+		this->transactionStack.clean(); //Limpio lugar donde creo transaction nueva
+		unsigned realAmount = 0;
+
+		for (UTXO& utxo : chosenUTXOs) {
+			std::string data = (utxo.getHashID() + std::to_string(utxo.getIndex())); //Meto a la transaction las inputs
+			Input input(utxo.getHashID(), utxo.getIndex(), this->getSignature(this->privateKey, data));
+			transactionStack.pushInput(input);
+
+			realAmount += utxo.getAmount(valueTypes::EDACoins); //Calculo la plata que verdaderamente estoy poniendo sobre la mesa
+		}
+
+		if (realAmount > amount) {
+			Output realOutput(amount, pubKeyRecipient); //Mando la plata que tengo que mandar
+			Output changeOutput(realAmount - amount, this->publicKey); //Me devuelvo el exceso
+			transactionStack.pushOutput(realOutput);
+			transactionStack.pushOutput(changeOutput);
+		}
+		else {
+			Output realOutput(amount, pubKeyRecipient); //Mando la plata que tengo que mandar
+			transactionStack.pushOutput(realOutput);
+		}
 	}
-	//HACE FALTA TODAVIA METER LA PUBKEY DE A QUIEN SE LO QUIERO MANDAR, Y PENSAR EN QUE SI ME PASO DEL AMOUNT CON LOS UTXO ENTONCES
-	//DEVOLVERME EL VUELTO!!!! LA PUBKEY ES DE A QUIEN SE LO QUIERO MANDAR. CUANDO VERIFICO, EL IMPUT TIENE QUE TENER SIGNATURE Y REFERENCIA A UN
-	//OUTPUT QUE POSEA UNA PUBKEY Y AMBAS TIENEN QUE SER DE LA MISMA PRIV KEY
 }
 
 Nodo * Nodo::searchForNode(ID NodeID, std::vector<bool>& visited) {
@@ -274,8 +291,7 @@ void Nodo::updateBalance()
 {
 	this->EDAcoinsBalance = 0;
 	for (UTXO utxo : this->UTXOs)
-		EDAcoinsBalance += utxo.getUTXOval(valueTypes::EDACoins); //Sumo el valor de cada UTXO.
-
+		EDAcoinsBalance += utxo.getAmount(valueTypes::EDACoins); //Sumo el valor de cada UTXO.
 }
 
 int Nodo::findClosestBiggerValue(value_t val, valueTypes valueType)
@@ -288,16 +304,16 @@ int Nodo::findClosestBiggerValue(value_t val, valueTypes valueType)
 
 		int i = 0;
 
-		if ( ( utxo.getUTXOval(valueType) * ((int)valueType) ) >= val) { //Tambien puede ser igual.
+		if ( ( utxo.getAmount(valueType) * ((int)valueType) ) >= val) { //Tambien puede ser igual.
 
 			if (firstBiggerValue) { //Seteo el primer mayor valor.
 				firstBiggerValue = false;
-				closestBiggerValue = utxo.getUTXOval(valueType);
+				closestBiggerValue = utxo.getAmount(valueType);
 				returnIndex = i;
 			}
 
-			if (utxo.getUTXOval(valueType) < closestBiggerValue) {
-				closestBiggerValue = utxo.getUTXOval(valueType);
+			if (utxo.getAmount(valueType) < closestBiggerValue) {
+				closestBiggerValue = utxo.getAmount(valueType);
 				returnIndex = i;
 			}
 
@@ -314,11 +330,11 @@ std::vector<UTXO> Nodo::sumLowerValues(value_t val, valueTypes valueType)
 
 	for (UTXO utxo : this->UTXOs) { //Este FOR encuentra el UTXO con el valor mas grande mas cercano
 
-			if ( (utxo.getUTXOval(valueType)*(int) valueType) < val) {
+			if ( (utxo.getAmount(valueType)*(int) valueType) < val) {
 
 				chosenUTXOs.push_back((this->UTXOs).at(i)); //Pongo el UTXO en el vector de salida.
 				this->UTXOs.erase(UTXOs.begin() + i); //Elimino el elemento del vector pues ahora esta enfilado para enviarse.
-				totalValue += utxo.getUTXOval(valueType);
+				totalValue += utxo.getAmount(valueType);
 
 			}
 

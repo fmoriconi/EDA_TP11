@@ -10,6 +10,8 @@
 #include "cryptopp\hex.h"
 #include "cryptopp\sha3.h"
 
+#define PUBLIC_KEY_CHARS_ 40
+
 class Transaction
 {
 public:
@@ -37,7 +39,7 @@ public:
 		message += inputQuantity;
 		for (Output& output : outputVector) {
 			message += output.amount;
-			message += byteVectorToString(output.publicKey);
+			message += byteVectorToString(getPublicKey(output.publicKey));
 		}
 		message += outputQuantity;
 		std::string digest;
@@ -51,6 +53,19 @@ public:
 		for (byte by : byteVector)
 			returnString += by;
 		return returnString;
+	}
+
+	std::vector<byte> getPublicKey(CryptoPP::DL_PublicKey_EC<CryptoPP::ECP> pubkey)
+	{
+		std::vector<byte> pubKeyByteArray(PUBLIC_KEY_CHARS_);
+		std::vector<byte> aux(PUBLIC_KEY_CHARS_ / 2);
+		const CryptoPP::ECP::Point &point = pubkey.GetPublicElement();
+		point.x.Encode(aux.data(), point.x.ByteCount());
+		pubKeyByteArray.clear();
+		pubKeyByteArray.insert(pubKeyByteArray.end(), aux.begin(), aux.end());
+		point.y.Encode(aux.data(), point.y.ByteCount());
+		pubKeyByteArray.insert(pubKeyByteArray.end(), aux.begin(), aux.end());
+		return pubKeyByteArray;
 	}
 
 	void clean() {

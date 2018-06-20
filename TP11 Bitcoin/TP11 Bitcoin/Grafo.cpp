@@ -122,7 +122,8 @@ void Grafo::ensureGrafoConexo()
 		}
 	}
 
-	this->nodes[0]->setAmountOfNodes(visited.size());
+	for(Nodo* nodo : this->nodes)
+		nodo->setAmountOfNodes(visited.size());
 
 }
 

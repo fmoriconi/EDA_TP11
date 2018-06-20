@@ -12,6 +12,7 @@
 int main(int argc, char * argv[]) {
 
 	parameters_t params;
+	srand(time(NULL));
 
 	if (parseCmdLine(argc, argv, &parseCallback, &params) > 0) {
 
@@ -26,39 +27,15 @@ int main(int argc, char * argv[]) {
 
 		do {
 			ev = al_class.getInput(graph.nodes);
-			if(ev.type != EDAEVENT_TYPE::NOEVENT)
+
+			if (ev.type != EDAEVENT_TYPE::NOEVENT) {
 				ev_handler.pushEvent(ev); //Meto evento a la cola
+			}
+
+			//Aca es donde metemos si alguien pago, minear, etc. Siempre desencolando de la cola de eventos.
+
 			al_class.updateDisplay(graph.nodes);
 		} while (ev.type != EDAEVENT_TYPE::QUIT);
-
-		//createNodes();
-
-		//while (checkConnectivity()) //BFS o DFS...
-		//	makeConnections();
-
-		//for (Node N in Graph) {
-
-		//	if (N.hasTX2Send())
-		//		N.sendTX();
-
-		//} //Primero se envian todas las transacciones, apilandose en una cola como en networking, y luego se procesan.
-
-		//for (Node N in Graph) {
-		//	if (N.TXArrived)
-		//		N.VerifyTxQueue();
-		//}
-
-		//for (N in graph) {
-		//	if (N.isMiner())
-		//		N.OneMine(); //ONE MIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIINE
-		//}
-
-
-		//createTX(N1, N2, 7); //Mando 7 EDACoins del nodo 1 al nodo 2
-
-			////----------------------------//
-			//// ALLEGRO	- Input y eventos //
-			////----------------------------//
 
 	}
 

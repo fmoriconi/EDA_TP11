@@ -16,7 +16,6 @@ Nodo::Nodo(bool isMiner_)
 		std::cout << "private key from node " << this->id << " is not valid!" << std::endl;
 	else
 		privateKey.MakePublicKey(this->publicKey);
-
 }
 
 
@@ -166,6 +165,34 @@ bool Nodo::receiveBlock(Block block)
 		return false;
 }
 
+bool Nodo::mine() {
+	std::chrono::system_clock::time_point timepoint = std::chrono::system_clock::now();
+	std::string timestamp = this->time_point_to_string(timepoint);
+	uint32_t nonce = rand();
+	Block block = createBlock(nonce, timestamp);
+	std::string blockHash = block.hashBlock();
+	for (int i = 0; i < 4; i++) {
+		if (blockHash[i] != 0)
+			return false;
+	}
+	sendBlock(block);
+	return true;
+}
+
+Block Nodo::createBlock(uint32_t nonce, std::string timestamp)
+{
+	blockStack.clean();
+	
+	for (Transaction TX : transactionQueue) {
+		blockStack.pushTransaction(TX);
+	}
+	blockStack.setNonce(nonce);
+	blockStack.setTimestamp(timestamp);
+	blockStack.setPreviousHashID(blockchain.blockchain.back().hashBlock());
+	blockStack.setBlockID(blockchain.blockchain.back().getBlockID() + 1);
+	return blockStack;
+}
+
 void Nodo::sendBlock(Block block)
 {
 	for (Nodo* nodo : connectedNodes) {
@@ -175,7 +202,7 @@ void Nodo::sendBlock(Block block)
 	}
 }
 
-void Nodo::createTransaction(value_t amount, unsigned nodeID)
+Transaction Nodo::createTransaction(value_t amount, unsigned nodeID)
 {
 	std::vector<bool> visited;
 	for (int i = 0; i < amountOfNodes; i++);
@@ -183,12 +210,12 @@ void Nodo::createTransaction(value_t amount, unsigned nodeID)
 
 	Nodo * nodePtr = searchForNode(nodeID, visited); //Encuentro a quien se lo quiero mandar
 
+	this->transactionStack.clean(); //Limpio lugar donde creo transaction nueva
 	if (nodePtr) {
 		CryptoPP::DL_PublicKey_EC<CryptoPP::ECP> pubKeyRecipient = nodePtr->getPublicKeyRaw(); //Encuentro la pubKey del recipient
 
 		std::vector<UTXO> chosenUTXOs = findUTXOs(amount, valueTypes::EDACoins); //Encuentro los UTXOs necesarios para completar amount del sender.
 
-		this->transactionStack.clean(); //Limpio lugar donde creo transaction nueva
 		unsigned realAmount = 0;
 
 		for (UTXO& utxo : chosenUTXOs) {
@@ -208,6 +235,16 @@ void Nodo::createTransaction(value_t amount, unsigned nodeID)
 		else {
 			Output realOutput(amount, pubKeyRecipient); //Mando la plata que tengo que mandar
 			transactionStack.pushOutput(realOutput);
+		}
+	}
+	return transactionStack;
+}
+
+void Nodo::sendTransaction(Transaction TX)
+{
+	for (Nodo* nodo : connectedNodes) {
+		if (nodo != nullptr) {
+			nodo->receiveTransaction(TX);
 		}
 	}
 }
@@ -361,4 +398,28 @@ std::string Nodo::stringToHex(std::string string)
 		output.push_back(lut[c & 15]);
 	}
 	return output;
+}
+
+std::string Nodo::time_point_to_string(std::chrono::system_clock::time_point &tp)
+{
+	using namespace std;
+	using namespace std::chrono;
+
+	auto ttime_t = system_clock::to_time_t(tp);
+	auto tp_sec = system_clock::from_time_t(ttime_t);
+	milliseconds ms = duration_cast<milliseconds>(tp - tp_sec);
+
+	std::tm * ttm = localtime(&ttime_t);
+
+	char date_time_format[] = "%Y.%m.%d-%H.%M.%S";
+
+	char time_str[] = "yyyy.mm.dd.HH-MM.SS.fff";
+
+	strftime(time_str, strlen(time_str), date_time_format, ttm);
+
+	string result(time_str);
+	result.append(".");
+	result.append(to_string(ms.count()));
+
+	return result;
 }

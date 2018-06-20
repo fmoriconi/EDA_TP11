@@ -8,6 +8,7 @@
 #include "cryptopp\sha3.h"
 
 #include <vector>
+#include <ctime>
 #include "UTXO.h"
 #include "Blockchain.h"
 
@@ -49,41 +50,43 @@ public:
 	/*Esta funcion nos permite a partir de la data que queremos verificar, la firma del que lo firmo, y el public key del que lo firmo, saber
 	si la public key y la signature vienen de la misma private key que se cree que lo firmo.*/
 
-	void receiveTransaction(Transaction & TX);
-	bool verifyTransaction(Transaction & TX);
-	bool receiveBlock(Block block);
-	void sendBlock(Block block);
-	void createTransaction(value_t amount, unsigned);
+	void receiveTransaction(Transaction & TX); //Recive una transaccion, la verifica.
+	bool verifyTransaction(Transaction & TX); //Verifica una transaccion.
+	bool receiveBlock(Block block); //Recive bloque nuevo, lo verifica.
+	Block createBlock(uint32_t nonce, std::string timestamp); //Crea un bloque nuevo.
+	void sendBlock(Block block); //Propaga un bloque a sus conectados.
+	Transaction createTransaction(value_t amount, unsigned); //Crea una transaccion nueva
+	void sendTransaction(Transaction TX); //Propaga una transaccion a sus conectados.
+	bool mine(); //True si pudo minar, false si no pudo minar.
 
-	//mine(); //Minar = Probar un solo valor por nodo minero en cada loop.
-	//createBlock();
-
-	std::string hashSome(std::string data);
-	std::vector<byte> getPrivateKey();
-	std::vector<byte> getPublicKey();
-	CryptoPP::DL_PublicKey_EC<CryptoPP::ECP> getPublicKeyRaw() { return this->publicKey; }
-	std::string byteVectorToString(std::vector<byte> byteVector);
-	std::string stringToHex(std::string string);
-	std::vector<UTXO> findUTXOs(value_t val, valueTypes valueType);
+	std::string hashSome(std::string data); //Hashea data
+	std::vector<byte> getPrivateKey(); //Devuelve private key en vector de bytes
+	std::vector<byte> getPublicKey(); //Devuelve pub key en vector de bytes
+	CryptoPP::DL_PublicKey_EC<CryptoPP::ECP> getPublicKeyRaw() { return this->publicKey; } //Devuelve pub key en formato raro
+	std::string byteVectorToString(std::vector<byte> byteVector); //De vector de bytes a string
+	std::string stringToHex(std::string string); //De string a hexa
+	std::vector<UTXO> findUTXOs(value_t val, valueTypes valueType); //Encuentra UTXO buenos para pagar una dada suma.
 	/*Prepara los UTXOs para realizar un output y los manda a la output queue*/
 
-	bool selected;
-	unsigned amountOfNodes = 0;
-	void setID(ID id_) { (this->id = id_); }
-	ID getID() { return this->id; }
-	value_t getBalance() { return this->EDAcoinsBalance; }
-	bool getIsMiner() { return this->isMiner; }
-	void setAmountOfNodes(unsigned int amount) { this->amountOfNodes = amount; }
+	bool selected; //Si este nodo esta seleccionado para ver su informacion
+	unsigned amountOfNodes = 0; //Cantridad de nodos que existen
+	void setID(ID id_) { (this->id = id_); } //Para setear su id
+	ID getID() { return this->id; } //Para getear id
+	value_t getBalance() { updateBalance(); return this->EDAcoinsBalance; } //Te da el balance en EDACOINS
+	bool getIsMiner() { return this->isMiner; } //Si es minero
+	void setAmountOfNodes(unsigned int amount) { this->amountOfNodes = amount; } //Cuantos nodos existen
 
 private:
 
 	bool isMiner = false; //Esto se decide al momento de construir y no vuelve a modificarse.
 
 	value_t EDAcoinsBalance; //El total de EDACoins que tiene el nodo.
-	void updateBalance();
+	void updateBalance(); //Updatea el balance de bitcoins.
 
 	int findClosestBiggerValue(value_t val, valueTypes valueType);
 	std::vector<UTXO> sumLowerValues(value_t val, valueTypes valueType);
+	std::string time_point_to_string(std::chrono::system_clock::time_point &tp);
 	ID id;
-	Nodo * searchForNode(ID id, std::vector<bool>& visited);
+	Nodo * searchForNode(ID id, std::vector<bool>& visited); //Funcion recursiva que dada una id de nodo y un vector de booleanos
+	//que corresponde a los nodos ya visitados, busca el nodo pedido. y devuelve puntero a el.
 };

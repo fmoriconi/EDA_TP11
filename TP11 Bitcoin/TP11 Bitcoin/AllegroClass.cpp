@@ -89,6 +89,7 @@ void allegroClass::infoWindow(Nodo* nodito) {
 	al_draw_text(smallfont, AL_BLACK, INFO_WINDOW_TEXT_X + 66, INFO_WINDOW_TEXT_Y4+20, ALLEGRO_ALIGN_LEFT, auxstring.c_str());
 	auxstring = aux2.substr(53);
 	al_draw_text(smallfont, AL_BLACK, INFO_WINDOW_TEXT_X + 66, INFO_WINDOW_TEXT_Y4 + 40, ALLEGRO_ALIGN_LEFT, auxstring.c_str());
+	//auxstring = "nose";
 	//al_draw_text(smallfont, AL_BLACK, INFO_WINDOW_TEXT_X, INFO_WINDOW_TEXT_Y5, ALLEGRO_ALIGN_LEFT, auxstring.c_str());
 }
 
@@ -191,6 +192,7 @@ EDAevent& allegroClass::getInput(std::vector<Nodo*>& nodos)
 	EDAevent ev;
 	ALLEGRO_EVENT aev;
 	ALLEGRO_MOUSE_STATE mstate;
+	bool nodeSelected;
 
 	al_get_mouse_state(&mstate);
 	if (mstate.buttons & 1 && firstletgo) {

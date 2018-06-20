@@ -22,6 +22,8 @@ Grafo::Grafo(unsigned int nodeQty,unsigned int minerQty )
 	std::random_shuffle(nodes.begin(), nodes.end()); //Shuffleamos porque no somos aburridos y no queremos que todos los mineros esten juntos.
 
 	enumNodes();
+	UTXO firstUTXO(50, "", 0);
+	nodes[0]->UTXOs.push_back(firstUTXO);
 	createConnections();
 	ensureGrafoConexo();
 

@@ -122,6 +122,8 @@ void Grafo::ensureGrafoConexo()
 		}
 	}
 
+	this->nodes[0]->setAmountOfNodes(visited.size());
+
 }
 
 bool Grafo::recursion(int index, std::vector<bool>& visited) {

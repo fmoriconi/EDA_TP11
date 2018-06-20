@@ -25,6 +25,7 @@ public:
 
 	void pushInput(Input input) { inputVector.push_back(input); inputQuantity++; }
 	void pushOutput(Output output) { outputVector.push_back(output); outputQuantity++; }
+
 	std::string hashTransaction() {
 		CryptoPP::SHA256 hash;
 		std::string message;
@@ -44,11 +45,20 @@ public:
 		hashID = digest;
 		return digest;
 	}
+
 	std::string byteVectorToString(std::vector<byte> byteVector) {
 		std::string returnString;
 		for (byte by : byteVector)
 			returnString += by;
 		return returnString;
+	}
+
+	void clean() {
+		this->hashID.clear();
+		this->inputVector.clear();
+		this->outputVector.clear();
+		this->inputQuantity = 0;
+		this->outputQuantity = 0;
 	}
 
 };

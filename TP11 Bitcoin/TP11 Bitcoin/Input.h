@@ -11,12 +11,11 @@
 class Input
 {
 public:
-	Input();
+	Input(std::string hashID_, long unsigned index_, std::vector<byte> signature_);
 	~Input();
 
 	std::string hashID;
 	long unsigned index;
-
 	std::vector<byte> signature;
 
 };

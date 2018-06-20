@@ -27,7 +27,7 @@ public:
 
 (b) The output script for the new transaction will be formed by A's client. It will store the hash of the BTC Address of B and enable it to spend these BTC in future.*/
 
-	///ANATOMIA DEL NODO
+///ANATOMIA DEL NODO
 	CryptoPP::ECDSA<CryptoPP::ECP, CryptoPP::SHA256>::PrivateKey privateKey;
 	/*Key privada, sirve para crear una firma junto a los datos que queres firmar, para decir que esto es tuyo. La firma
 	se denomina Signature.*/
@@ -49,23 +49,11 @@ public:
 	/*Esta funcion nos permite a partir de la data que queremos verificar, la firma del que lo firmo, y el public key del que lo firmo, saber
 	si la public key y la signature vienen de la misma private key que se cree que lo firmo.*/
 
-	void receiveTransaction(Transaction & TX, CryptoPP::ECDSA<CryptoPP::ECP, CryptoPP::SHA256>::PublicKey &pubKey);
+	void receiveTransaction(Transaction & TX);
 	bool verifyTransaction(Transaction & TX);
 	bool receiveBlock(Block block);
 	void sendBlock(Block block);
-	/*
-	COSAS QUE EL NODO TIENE QUE HACCER CUANDO LE LLEGA UN BLOQUE
-	verificar hash correcto
-	verificar que cumpla el target
-	verificar si el previous hash es correcto
-	verificar todas las transacciones
-	*/
-
-	//checkedTX(bool, Tx);
-	//checkedBlock( , );
-
-
-	////Si el nodo es minero
+	void createTransaction(value_t amount, unsigned);
 
 	//mine(); //Minar = Probar un solo valor por nodo minero en cada loop.
 	//createBlock();
@@ -73,9 +61,10 @@ public:
 	std::string hashSome(std::string data);
 	std::vector<byte> getPrivateKey();
 	std::vector<byte> getPublicKey();
+	CryptoPP::DL_PublicKey_EC<CryptoPP::ECP> getPublicKeyRaw() { this->publicKey; }
 	std::string byteVectorToString(std::vector<byte> byteVector);
 	std::string stringToHex(std::string string);
-	bool prepareOutputTransaction(value_t val, valueTypes valueType);
+	std::vector<UTXO> findUTXOs(value_t val, valueTypes valueType);
 	/*Prepara los UTXOs para realizar un output y los manda a la output queue*/
 
 	bool selected;
@@ -83,17 +72,23 @@ public:
 	ID getID() { return this->id; }
 	value_t getBalance() { return this->EDAcoinsBalance; }
 	bool getIsMiner() { return this->isMiner; }
+	void setAmountOfNodes(unsigned int amount) { this->amountOfNodes = amount; }
 
 private:
 
 	bool isMiner = false; //Esto se decide al momento de construir y no vuelve a modificarse.
-	
+
 	value_t EDAcoinsBalance; //El total de EDACoins que tiene el nodo.
 	void updateBalance();
 
 	int findClosestBiggerValue(value_t val, valueTypes valueType);
-	bool sumLowerValues(value_t val, valueTypes valueType);
+	std::vector<UTXO> sumLowerValues(value_t val, valueTypes valueType);
 	ID id;
+	Nodo * searchForNode(ID id, std::vector<bool>& visited);
+	static unsigned int amountOfNodes;
 
 
 };
+
+
+unsigned int Nodo::amountOfNodes = 0;

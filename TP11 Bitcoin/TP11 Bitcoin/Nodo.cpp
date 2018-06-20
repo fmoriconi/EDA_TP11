@@ -44,9 +44,15 @@ bool Nodo::verifySignature(CryptoPP::ECDSA<CryptoPP::ECP, CryptoPP::SHA256>::Pub
 	return  verifier.VerifyMessage((const byte*)data.data(), data.size(), (const byte*)signature.data(), signature.size());
 }
 
-void Nodo::receiveTransaction(Transaction& TX, CryptoPP::ECDSA<CryptoPP::ECP, CryptoPP::SHA256>::PublicKey & pubKey)
+void Nodo::receiveTransaction(Transaction& TX)
 { 
-
+	if (verifyTransaction(TX)) {
+		for (Nodo* nodo : connectedNodes) {
+			if (nodo != nullptr) {
+				nodo->receiveTransaction(TX); //this doesnt sound right
+			}
+		}
+	}
 }
 
 bool Nodo::verifyTransaction(Transaction & TX)
@@ -78,7 +84,12 @@ bool Nodo::verifyTransaction(Transaction & TX)
 		for (Block& block : blockchain.blockchain) { //Si dentro de cada bloque de la blockchain
 			for (Transaction& TX : block.transactions) { //Dentro de cada TX de cada bloque
 				if (TX.hashID == input.hashID) { //Hay alguna transaccion con el mismo hash que el que referencia el input
-					inputTotal += TX.outputVector[input.index].amount; //Y si la hay, es porque se encontro el output al que referencia la input y sumo amount
+					std::string data = input.hashID + std::to_string(input.index);
+					if (verifySignature(TX.outputVector[input.index].publicKey, data, input.signature)) {
+						inputTotal += TX.outputVector[input.index].amount; //Y si la hay, es porque se encontro el output al que referencia la input y sumo amount
+					}
+					else
+						return false;
 				}
 			}
 		}
@@ -86,9 +97,14 @@ bool Nodo::verifyTransaction(Transaction & TX)
 	if (outputTotal != inputTotal)
 		return false;
 
-	/* ACA FALTA VER SI LA TRANSACCION ES MIA PARA AGREGARLA A MIS UTXO
-	Y FALTA VER QUIEN ME LA MANDO Y PASARSELAS A QUIEN NO ME LA MANDO
-	ADEMAS, FALTA VERIFICAR JUNTO A LA PUBKEY Y LA SIGNATURE, SI LA FIRMA VERIFICA.*/
+	unsigned index = 0;
+	for (Output& output : TX.outputVector) {
+		if (output.publicKey == this->publicKey) { //Es mia
+			UTXO myNewUTXO(output.amount, TX.hashTransaction(), index, 0);
+			this->UTXOs.push_back(myNewUTXO);
+		}
+		index++;
+	}
 
 	return true;
 }
@@ -128,12 +144,12 @@ bool Nodo::receiveBlock(Block block)
 				return false;
 		}
 		//Borro cualquier transaccion se halle en el pool que ya esten en el bloque confirmado
-		unsigned index;
+		unsigned index = 0;
 		for (Transaction& TX : transactionQueue) {
 			for (Transaction& TX2 : block.transactions) {
 				if (TX.hashID == TX2.hashID) {
-					std::vector<Transaction>::iterator currTX = transactionQueue.begin() + index;
-					transactionQueue.erase(currTX);
+//					std::vector<Transaction>::iterator currTX = transactionQueue.begin() + index;
+//					transactionQueue.erase(currTX);
 				}
 			}
 			index++;
@@ -157,6 +173,43 @@ void Nodo::sendBlock(Block block)
 			nodo->receiveBlock(block); //this doesnt sound right
 		}
 	}
+}
+
+void Nodo::createTransaction(value_t amount, unsigned nodeID)
+{
+
+	std::vector<bool> visited;
+	for (int i = 0; i < amountOfNodes; i++);
+		visited.push_back(false);
+
+	Nodo * nodePtr = searchForNode(nodeID, visited); //Encuentro a quien se lo quiero mandar
+	CryptoPP::DL_PublicKey_EC<CryptoPP::ECP> pubKeyRecipient = nodePtr->getPublicKeyRaw(); //Encuentro la pubKey del recipient
+	std::vector<UTXO> chosenUTXOs = findUTXOs(amount, valueTypes::EDACoins); //Encuentro los UTXOs necesarios para completar amount del sender.
+	this->transactionStack.clean(); //Limpio lugar donde creo transaction nueva
+	for (UTXO& utxo : chosenUTXOs) {
+		std::string data = utxo.getHashID + std::to_string(utxo.getIndex);
+		Input input(utxo.getHashID(), utxo.getIndex(), this->getSignature(this->privateKey, data));
+	}
+	//HACE FALTA TODAVIA METER LA PUBKEY DE A QUIEN SE LO QUIERO MANDAR, Y PENSAR EN QUE SI ME PASO DEL AMOUNT CON LOS UTXO ENTONCES
+	//DEVOLVERME EL VUELTO!!!! LA PUBKEY ES DE A QUIEN SE LO QUIERO MANDAR. CUANDO VERIFICO, EL IMPUT TIENE QUE TENER SIGNATURE Y REFERENCIA A UN
+	//OUTPUT QUE POSEA UNA PUBKEY Y AMBAS TIENEN QUE SER DE LA MISMA PRIV KEY
+}
+
+Nodo * Nodo::searchForNode(ID NodeID, std::vector<bool>& visited) {
+
+	if (this->id == NodeID) {
+		return this;
+	}
+	else {
+		visited[this->getID()] = true;
+
+		for (Nodo * nodito : connectedNodes) {
+			if (!visited[nodito->getID()])
+				return nodito->searchForNode(NodeID, visited);
+		}
+	}
+
+	return nullptr; //Si el ID no existe, devuelve un puntero a NULL.
 }
 
 std::string Nodo::hashSome(std::string data)
@@ -195,26 +248,26 @@ std::string Nodo::byteVectorToString(std::vector<byte> byteVector) {
 	return returnString;
 }
 
-bool Nodo::prepareOutputTransaction(value_t val, valueTypes valueType)
+std::vector<UTXO> Nodo::findUTXOs(value_t val, valueTypes valueType)
 {
-		if (val > ((this->EDAcoinsBalance)*((int) valueType))){ //Este casteo es para ajustar el valor que tendo de EDACoins a Ressels.
-			return false;
+		std::vector<UTXO> chosenUTXOs;
+
+		if (val > ((this->EDAcoinsBalance)*((int) valueType))){ //Este casteo es para ajustar el valor que tendo de EDACoins a Ressels
 		}
+
 		else {
 
 			int i = findClosestBiggerValue(val, valueType);
 
 			if (i < this->UTXOs.size()) { //Si i es igual, findClosestBiggerValue no encontro valor mayor.
-				this->outputQueue.push_back((this->UTXOs).at(i)); //Pongo el UTXO en el vector de salida.
+				chosenUTXOs.push_back(this->UTXOs.at(i)); //Pongo el UTXO en el vector de salida.
 				this->UTXOs.erase(UTXOs.begin() + i); //Elimino el elemento del vector pues ahora esta enfilado para enviarse.
-				return true;
 			}
 
-			sumLowerValues(val, valueType); //Si no retornee antes, es porque no hay valor mayor. Esta funcion ya acomoda los vectores.
-			return true;
-
+			chosenUTXOs = sumLowerValues(val, valueType); //Si no retornee antes, es porque no hay valor mayor. Esta funcion ya acomoda los vectores.
 		}
 
+		return chosenUTXOs;
 }
 
 void Nodo::updateBalance()
@@ -253,28 +306,29 @@ int Nodo::findClosestBiggerValue(value_t val, valueTypes valueType)
 	return returnIndex; //Si no hubo valor mas grande, devuelve un valor imposible de acceder.
 }
 
-bool Nodo::sumLowerValues(value_t val, valueTypes valueType)
+std::vector<UTXO> Nodo::sumLowerValues(value_t val, valueTypes valueType)
 {
 	value_t totalValue = 0;
 	int i = 0;
+	std::vector<UTXO> chosenUTXOs;
 
 	for (UTXO utxo : this->UTXOs) { //Este FOR encuentra el UTXO con el valor mas grande mas cercano
 
 			if ( (utxo.getUTXOval(valueType)*(int) valueType) < val) {
 
-				this->outputQueue.push_back((this->UTXOs).at(i)); //Pongo el UTXO en el vector de salida.
+				chosenUTXOs.push_back((this->UTXOs).at(i)); //Pongo el UTXO en el vector de salida.
 				this->UTXOs.erase(UTXOs.begin() + i); //Elimino el elemento del vector pues ahora esta enfilado para enviarse.
 				totalValue += utxo.getUTXOval(valueType);
 
 			}
 
 			if (totalValue > val) //Si supere el total, ya no debo sumar mas.
-				return true; //Salgo del for. Solo devuelvo BOOL para poder poner un return.
+				return chosenUTXOs; //Salgo del for. Solo devuelvo BOOL para poder poner un return.
 
 			i++;
 
 	}
-	return true;
+	return chosenUTXOs;
 }
 
 std::string Nodo::stringToHex(std::string string)

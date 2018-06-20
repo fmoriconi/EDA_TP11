@@ -16,7 +16,7 @@ public:
 	~Output();
 
 	value_t amount;
-	std::vector<byte> publicKey;
+	CryptoPP::DL_PublicKey_EC<CryptoPP::ECP> publicKey;
 
 };
 

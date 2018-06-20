@@ -93,6 +93,9 @@
     <ClCompile Include="Transaction.cpp">
       <Filter>Source Files\Back\Transactions</Filter>
     </ClCompile>
+    <ClCompile Include="EDAevent.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="AllegroClass.h">

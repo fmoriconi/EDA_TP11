@@ -1,6 +1,7 @@
 #pragma once
 
 #include <queue>
+#include "Grafo.h"
 
 enum class EDAEVENT_TYPE {QUIT, PAY, M_PAY, MINED, NOEVENT };
 
@@ -14,6 +15,8 @@ public:
 	void pushEvent(EDAevent ev_) { events.push(ev_); }
 	EDAevent getEvent(EDAevent ev_) { EDAevent ev = events.back(); events.pop(); return ev; }
 	bool isEmpty() { return events.empty(); }
+	void itsTimeToOilUp(Grafo& graph); //El verdadero handler. Es quien hace la magia y procesa todo.
+
 private:
 	std::queue<EDAevent> events;
 };

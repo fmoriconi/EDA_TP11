@@ -34,12 +34,11 @@ int main(int argc, char * argv[]) {
 
 			//---Trabajo los eventos---//
 			if (!ev_handler.isEmpty()) {
-				ev_handler.pushEvent(ev); //Meto evento a la cola
+				ev_handler.itsTimeToOilUp(graph); 
 			}
 
 
-			//Aca es donde metemos si alguien pago, minear, etc. Siempre desencolando de la cola de eventos.
-
+			
 			al_class.updateDisplay(graph.nodes);
 		} while (ev.type != EDAEVENT_TYPE::QUIT);
 

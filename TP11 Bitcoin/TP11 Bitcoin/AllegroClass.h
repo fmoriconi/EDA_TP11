@@ -70,7 +70,8 @@ class allegroClass
 		void drawNodes(std::vector<Nodo*>& nodos);
 		void drawConnection(std::vector<Nodo*>& nodos);
 		unsigned int drawInfo = 0;
-		EDAevent& getInput(std::vector<Nodo*>& nodos);
+		void getInput(std::vector<Nodo*>& nodos, EDAeventHandler& ev);
+
 	private:
 		ALLEGRO_DISPLAY * display = NULL;
 		ALLEGRO_EVENT_QUEUE * ev_queue = NULL;

@@ -187,7 +187,7 @@ void allegroClass::drawConnection(std::vector<Nodo*>& nodos)
 	}
 }
 
-EDAevent& allegroClass::getInput(std::vector<Nodo*>& nodos)
+void allegroClass::getInput(std::vector<Nodo*>& nodos, EDAeventHandler& ev_handler)
 {
 	EDAevent ev;
 	ALLEGRO_EVENT aev;
@@ -258,7 +258,9 @@ EDAevent& allegroClass::getInput(std::vector<Nodo*>& nodos)
 		}
 	}
 
-	return ev;
+	if (ev.type != EDAEVENT_TYPE::NOEVENT) {
+		ev_handler.pushEvent(ev);
+	}
 }
 
 ALLEGRO_EVENT_QUEUE * allegroClass::getEventQueue()

@@ -88,8 +88,8 @@
     <Allegro_AddonAcodec>true</Allegro_AddonAcodec>
     <Allegro_AddonFont>true</Allegro_AddonFont>
     <Allegro_AddonColor>true</Allegro_AddonColor>
-    <IncludePath>C:\Users\Acer\Desktop\GitHub\EDA_TP11\TP11 Bitcoin\TP11 Bitcoin\cryptopp700;$(IncludePath)</IncludePath>
-    <LibraryPath>C:\Users\Acer\Desktop\GitHub\EDA_TP11\TP11 Bitcoin\TP11 Bitcoin\cryptopp700;$(LibraryPath)</LibraryPath>
+    <IncludePath>.\TP11 Bitcoin\cryptopp700;$(IncludePath)</IncludePath>
+    <LibraryPath>.\TP11 Bitcoin\cryptopp700;$(LibraryPath)</LibraryPath>
   </PropertyGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
     <ClCompile>
@@ -113,10 +113,10 @@
       <SDLCheck>true</SDLCheck>
       <ConformanceMode>true</ConformanceMode>
       <PreprocessorDefinitions>_CRT_SECURE_NO_WARNINGS;%(PreprocessorDefinitions)</PreprocessorDefinitions>
-      <AdditionalIncludeDirectories>C:\Users\Acer\Desktop\GitHub\EDA_TP11\TP11 Bitcoin\TP11 Bitcoin\cryptopp700;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>.\TP11 Bitcoin\cryptopp700;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
     </ClCompile>
     <Link>
-      <AdditionalLibraryDirectories>C:\Users\Acer\Desktop\GitHub\EDA_TP11\TP11 Bitcoin\TP11 Bitcoin\cryptopp700;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
+      <AdditionalLibraryDirectories>.\TP11 Bitcoin\cryptopp700;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
     </Link>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">

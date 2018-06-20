@@ -26,11 +26,17 @@ int main(int argc, char * argv[]) {
 		ev.type = EDAEVENT_TYPE::NOEVENT;
 
 		do {
-			ev = al_class.getInput(graph.nodes);
 
-			if (ev.type != EDAEVENT_TYPE::NOEVENT) {
+			//----Recibo eventos---//
+			al_class.getInput(graph.nodes, ev_handler);
+
+
+
+			//---Trabajo los eventos---//
+			if (!ev_handler.isEmpty()) {
 				ev_handler.pushEvent(ev); //Meto evento a la cola
 			}
+
 
 			//Aca es donde metemos si alguien pago, minear, etc. Siempre desencolando de la cola de eventos.
 

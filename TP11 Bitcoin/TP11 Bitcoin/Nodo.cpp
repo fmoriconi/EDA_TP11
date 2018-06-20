@@ -43,9 +43,10 @@ bool Nodo::verifySignature(CryptoPP::ECDSA<CryptoPP::ECP, CryptoPP::SHA256>::Pub
 	return  verifier.VerifyMessage((const byte*)data.data(), data.size(), (const byte*)signature.data(), signature.size());
 }
 
-void Nodo::receiveTransaction(Transaction& TX)
+void Nodo::receiveTransaction(Transaction TX)
 { 
 	if (verifyTransaction(TX)) {
+		this->transactionQueue.push_back(TX);
 		for (Nodo* nodo : connectedNodes) {
 			if (nodo != nullptr) {
 				nodo->receiveTransaction(TX); //this doesnt sound right
@@ -54,7 +55,7 @@ void Nodo::receiveTransaction(Transaction& TX)
 	}
 }
 
-bool Nodo::verifyTransaction(Transaction & TX)
+bool Nodo::verifyTransaction(Transaction TX)
 {
 	//Que inputs y outputs no esten vacios
 	if (TX.inputVector.empty())
@@ -80,21 +81,47 @@ bool Nodo::verifyTransaction(Transaction & TX)
 		outputTotal += output.amount;
 	}
 	for (Input& input : TX.inputVector) { //Busco para cada input de la TX a verificar
-		for (Block& block : blockchain.blockchain) { //Si dentro de cada bloque de la blockchain
-			for (Transaction& TX : block.transactions) { //Dentro de cada TX de cada bloque
-				if (TX.hashID == input.hashID) { //Hay alguna transaccion con el mismo hash que el que referencia el input
-					std::string data = input.hashID + std::to_string(input.index);
-					if (verifySignature(TX.outputVector[input.index].publicKey, data, input.signature)) {
-						inputTotal += TX.outputVector[input.index].amount; //Y si la hay, es porque se encontro el output al que referencia la input y sumo amount
+		if(input.hashID == "" && initialTX) {
+			initialTX = false;
+			inputTotal = outputTotal;
+		}
+		else if (input.hashID == "") {
+			return false;
+		}
+		else {
+			for (Block& block : blockchain.blockchain) { //Si dentro de cada bloque de la blockchain
+				for (Transaction& TX : block.transactions) { //Dentro de cada TX de cada bloque
+					if (TX.hashID == input.hashID) { //Hay alguna transaccion con el mismo hash que el que referencia el input
+						std::string data = input.hashID + std::to_string(input.index);
+						if (verifySignature(TX.outputVector[input.index].publicKey, data, input.signature)) {
+							inputTotal += TX.outputVector[input.index].amount; //Y si la hay, es porque se encontro el output al que referencia la input y sumo amount
+						}
+						else
+							return false;
 					}
-					else
-						return false;
 				}
 			}
 		}
 	}
-	if (outputTotal != inputTotal)
-		return false;
+	if (outputTotal != inputTotal) {
+		for (Input input : TX.inputVector) {
+			for (Transaction TX : transactionQueue) {
+				if (input.hashID == TX.hashTransaction()) {
+					std::string data = input.hashID + std::to_string(input.index);
+					if (verifySignature(TX.outputVector[input.index].publicKey, data, input.signature)) {
+						inputTotal += TX.outputVector[input.index].amount;
+					}
+				}
+			}
+		}
+		if(outputTotal != inputTotal)
+			return false;
+	}
+
+	for (Transaction tx : transactionQueue) {
+		if (tx.hashID == TX.hashID)
+			return false;
+	}
 
 	unsigned index = 0;
 	for (Output& output : TX.outputVector) {

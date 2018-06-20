@@ -18,5 +18,7 @@ public:
 	long unsigned index;
 	std::vector<byte> signature;
 
+	bool godSent;
+
 };
 

@@ -28,11 +28,20 @@ int main(int argc, char * argv[]) {
 		do {
 			ev = al_class.getInput(graph.nodes);
 
-			if (ev.type != EDAEVENT_TYPE::NOEVENT) {
-				ev_handler.pushEvent(ev); //Meto evento a la cola
-			}
+			switch (ev.type) {
+				case EDAEVENT_TYPE::PAY: {
+					for (Nodo* node : graph.nodes) {
+						if (ev.id == node->getID()) {
+							node->sendTransaction(node->createTransaction(1, 3));
+						}
+					}
+					break;
+				}
+				case EDAEVENT_TYPE::M_PAY: {
 
-			//Aca es donde metemos si alguien pago, minear, etc. Siempre desencolando de la cola de eventos.
+					break;
+				}
+			}
 
 			al_class.updateDisplay(graph.nodes);
 		} while (ev.type != EDAEVENT_TYPE::QUIT);

@@ -62,10 +62,10 @@ bool Nodo::verifyTransaction(Transaction & TX)
 	if (TX.outputVector.empty())
 		return false;
 	//Que ningun input tenga hash 0
-	for (Input& input : TX.inputVector) {
-		if (std::stoi(input.hashID) == 0)
-			return false;
-	}
+	//for (Input& input : TX.inputVector) {
+	//	if (input.hashID == "")
+	//		return false;
+	//}
 	//Que la transaccion no este presente ya en algun bloque de la blockchain
 	for (Block& block : blockchain.blockchain) {
 		for (Transaction& TX2 : block.transactions) {
@@ -205,7 +205,7 @@ void Nodo::sendBlock(Block block)
 Transaction Nodo::createTransaction(value_t amount, unsigned nodeID)
 {
 	std::vector<bool> visited;
-	for (int i = 0; i < amountOfNodes; i++);
+	for (int i = 0; i < amountOfNodes; i++)
 		visited.push_back(false);
 
 	Nodo * nodePtr = searchForNode(nodeID, visited); //Encuentro a quien se lo quiero mandar
@@ -258,12 +258,11 @@ Nodo * Nodo::searchForNode(ID NodeID, std::vector<bool>& visited) {
 		visited[this->getID()] = true;
 
 		for (Nodo * nodito : connectedNodes) {
-			if (!visited[nodito->getID()])
+			if (!(visited[nodito->getID()]))
 				return nodito->searchForNode(NodeID, visited);
 		}
+		return connectedNodes[0]->searchForNode(NodeID, visited);
 	}
-
-	return nullptr; //Si el ID no existe, devuelve un puntero a NULL.
 }
 
 std::string Nodo::hashSome(std::string data)
@@ -318,7 +317,8 @@ std::vector<UTXO> Nodo::findUTXOs(value_t val, valueTypes valueType)
 				this->UTXOs.erase(UTXOs.begin() + i); //Elimino el elemento del vector pues ahora esta enfilado para enviarse.
 			}
 
-			chosenUTXOs = sumLowerValues(val, valueType); //Si no retornee antes, es porque no hay valor mayor. Esta funcion ya acomoda los vectores.
+			else 
+				chosenUTXOs = sumLowerValues(val, valueType); //Si no retornee antes, es porque no hay valor mayor. Esta funcion ya acomoda los vectores.
 		}
 
 		return chosenUTXOs;
